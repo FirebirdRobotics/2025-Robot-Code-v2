@@ -1,0 +1,78 @@
+{
+ "name":"Tests",
+ "version":1,
+ "type":"Swerve",
+ "variables":{
+  "expressions":{},
+  "poses":{}
+ },
+ "config":{
+  "frontLeft":{
+   "x":{
+    "exp":"10.748 in",
+    "val":0.2729992
+   },
+   "y":{
+    "exp":"10.748 in",
+    "val":0.2729992
+   }
+  },
+  "backLeft":{
+   "x":{
+    "exp":"-10.748 in",
+    "val":-0.2729992
+   },
+   "y":{
+    "exp":"-10.748 in",
+    "val":-0.2729992
+   }
+  },
+  "mass":{
+   "exp":"127.8681 lbs",
+   "val":57.999994526397
+  },
+  "inertia":{
+   "exp":"6.883 kg m ^ 2",
+   "val":6.883
+  },
+  "gearing":{
+   "exp":"6.75",
+   "val":6.75
+  },
+  "radius":{
+   "exp":"2 in",
+   "val":0.0508
+  },
+  "vmax":{
+   "exp":"485.89966375522135 rad / s",
+   "val":485.8996637552213
+  },
+  "tmax":{
+   "exp":"2.327950310559006 N m",
+   "val":2.327950310559006
+  },
+  "cof":{
+   "exp":"1.5",
+   "val":1.5
+  },
+  "bumper":{
+   "front":{
+    "exp":"28 in",
+    "val":0.7111999999999999
+   },
+   "side":{
+    "exp":"28 in",
+    "val":0.7111999999999999
+   },
+   "back":{
+    "exp":"28 in",
+    "val":0.7111999999999999
+   }
+  },
+  "differentialTrackWidth":{
+   "exp":"22 in",
+   "val":0.5588
+  }
+ },
+ "generationFeatures":[]
+}
