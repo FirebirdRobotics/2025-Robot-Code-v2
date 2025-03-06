@@ -145,14 +145,6 @@ public class RobotContainer {
      * 
      */
 
-    public void runIntakeRollersUntillIntakeCANRange() {
-        if (intake.getIntakeCANrange()) {
-            
-        } else {
-
-        }
-    }
-
     public Command manualIntakeCoral() {
         return null;
     }
