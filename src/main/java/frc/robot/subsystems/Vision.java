@@ -55,7 +55,7 @@ public class Vision extends SubsystemBase {
 
   public Vision(CommandSwerveDrivetrain m_CommandSwerveDrivetrain) {
     drivetrain = m_CommandSwerveDrivetrain;
-    camera1 = new PhotonCamera(VisionConstants.kCamera1Name);
+    camera1 = new PhotonCamera(VisionConstants.kCamera2Name);
     photonEstimator =
           new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToCam);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
