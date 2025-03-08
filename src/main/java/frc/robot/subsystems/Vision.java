@@ -40,8 +40,8 @@ public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
 
 
-  private final PhotonCamera camera1;
-//   private final PhotonCamera camera2;
+  private final PhotonCamera aprilCam;
+//   private final PhotonCamera objectCam;
 
   private final PhotonPoseEstimator photonEstimator;
   private Matrix<N3, N1> curStdDevs;
@@ -55,7 +55,7 @@ public class Vision extends SubsystemBase {
 
   public Vision(CommandSwerveDrivetrain m_CommandSwerveDrivetrain) {
     drivetrain = m_CommandSwerveDrivetrain;
-    camera1 = new PhotonCamera(VisionConstants.kCamera1Name);
+    aprilCam = new PhotonCamera(VisionConstants.kaprilCamName);
     photonEstimator =
           new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToCam);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
@@ -75,7 +75,7 @@ public class Vision extends SubsystemBase {
             cameraProp.setLatencyStdDevMs(15);
             // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
             // targets.
-            cameraSim = new PhotonCameraSim(camera1, cameraProp);
+            cameraSim = new PhotonCameraSim(aprilCam, cameraProp);
             // Add the simulated camera to view the targets on this simulated field.
             visionSim.addCamera(cameraSim, VisionConstants.kRobotToCam);
 
@@ -95,7 +95,7 @@ public class Vision extends SubsystemBase {
      */
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        for (var change : camera1.getAllUnreadResults()) {
+        for (var change : aprilCam.getAllUnreadResults()) {
             visionEst = photonEstimator.update(change);
             updateEstimationStdDevs(visionEst, change.getTargets());
 
