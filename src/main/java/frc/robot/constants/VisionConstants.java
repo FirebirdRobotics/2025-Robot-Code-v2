@@ -12,7 +12,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 
 public class VisionConstants {
-    public static final String kaprilCamName = "AprilCam"; // Arducam_OV2311USB_Camera (1)
+    public static final String kaprilCamRightName = "AprilCamRight"; // Arducam_OV2311USB_Camera (1)
+    public static final String kaprilCamLeftName = "AprilCamLeft"; // Arducam_OV2311USB_Camera (1)
 
     public static final String kobjectCamName = "ObjectCam"; // Arducam_OV2311USB_Camera
 
@@ -27,6 +28,6 @@ public class VisionConstants {
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);public static final String kaprilCamRightName = "AprilCamRight"; // Arducam_OV2311USB_Camera (1)
 
 }
