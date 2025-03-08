@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Commands.runIntakeRollersUntillIntakeCANRange;
 import frc.robot.constants.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
@@ -62,6 +63,8 @@ public class RobotContainer {
     Intake intake = new Intake();
 
     Vision vision;
+
+    Command m_RunIntakeRollersUntillIntakeCANRange = new runIntakeRollersUntillIntakeCANRange(intake);
     
     
 
@@ -128,6 +131,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         joystick.rightBumper().whileTrue(intake.setRollerMotorPercentOutputCommand(0.4));
+        joystick.leftBumper().whileTrue(intake.testIntakeDeployAndUndeploy());
         // joystick.rightBumper().whileTrue(m_TestIntake.setIntakePowerCommand(0.7));
         // joystick.leftBumper().whileTrue(m_TestIntake.setIntakePowerCommand(-0.7));
         
