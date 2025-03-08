@@ -42,7 +42,7 @@ public class Vision extends SubsystemBase {
 
   private final PhotonCamera aprilCamRight;
   private final PhotonCamera aprilCamLeft;
-//   private final PhotonCamera objectCam;
+  private final PhotonCamera objectCam;
 
   private final PhotonPoseEstimator photonEstimator;
   private Matrix<N3, N1> curStdDevs;
