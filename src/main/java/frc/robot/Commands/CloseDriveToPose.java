@@ -72,7 +72,7 @@ public class CloseDriveToPose extends Command {
         
         return xTranslationDone && yTranslationDone && rotationDone;
     }
-    
+
     @Override
     public void end(boolean interrupted) {
         swerve.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(0, 0, 0)));

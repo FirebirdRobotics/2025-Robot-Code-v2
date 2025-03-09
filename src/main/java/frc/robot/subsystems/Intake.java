@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
   private final TalonFX m_pivotMotor = new TalonFX(13, "CANivore");
@@ -30,6 +32,10 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
     var pivotMotorConfigs = new TalonFXConfiguration();
+
+    var intakeCANRangeConfigs = new CANrangeConfiguration();
+
+    intakeCANRangeConfigs.ProximityParams.ProximityThreshold = 0.3;
 
     pivotMotorConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     pivotMotorConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -52,10 +58,10 @@ public class Intake extends SubsystemBase {
     // var positionVoltageCongigs = pivotMotorConfigs.
 
     // set Motion Magic settings
-    // var motionMagicConfigs = pivotMotorConfigs.MotionMagic;
-    // motionMagicConfigs.MotionMagicCruiseVelocity = 0.0; // Target cruise velocity of 80 rps
-    // motionMagicConfigs.MotionMagicAcceleration = 0.0; // Target acceleration of 160 rps/s (0.5 seconds)
-    // motionMagicConfigs.MotionMagicJerk = 0.0; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    var motionMagicConfigs = pivotMotorConfigs.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = 30.0; // Target cruise velocity of 80 rps
+    motionMagicConfigs.MotionMagicAcceleration = 30.0; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicConfigs.MotionMagicJerk = 0.0; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     m_pivotMotor.getConfigurator().apply(pivotMotorConfigs);
 
@@ -66,14 +72,36 @@ public class Intake extends SubsystemBase {
   // -0.243 for deployed
   // Intake Deploys at inputed angle
   public void goToAngle(double angle) {
-    // final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    final PositionVoltage m_request = new PositionVoltage(angle).withSlot(0);
+    // final PositionVoltage m_request = new PositionVoltage(angle).withSlot(0);
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(angle);
 
     m_pivotMotor.setControl(m_request.withPosition(angle));
   }
 
+  public Command testIntakeDeployAndUndeploy() {
+    return runEnd(
+      () -> goToDeployedPosition(),
+      () -> goToFramePerimeterPosition()
+      
+      ); 
+  }
+
   public void goToDeployedPosition() {
-    
+    // final PositionVoltage m_request = new PositionVoltage(IntakeConstants.deployAngle).withSlot(0);
+
+    // m_pivotMotor.setControl(m_request.withPosition(IntakeConstants.deployAngle));
+
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(IntakeConstants.deployAngle);
+
+    m_pivotMotor.setControl(m_request.withPosition(IntakeConstants.deployAngle));
+
+  }
+
+  public void goToFramePerimeterPosition() {
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(IntakeConstants.framePerimeterAngle);
+
+    m_pivotMotor.setControl(m_request.withPosition(IntakeConstants.framePerimeterAngle));
+
   }
 
   /* */
@@ -104,15 +132,16 @@ public class Intake extends SubsystemBase {
   /**
   @return true if detects coral, false if it doesn't
   */
-  public boolean getIntakeCANrange() {
+  public boolean getIntakeCANrangeBeamBreak() {
     // Max distance away from sensor coral can be while still considering it "detected" distance units is meters
-    double maxDetectableDistanceMeters = 0.3;
-    if (intakeCANrange.getDistance().getValueAsDouble() <= maxDetectableDistanceMeters) {
-      return true;
-    }
-    return false;
+    return intakeCANrange.getIsDetected().getValue();
+  //   double maxDetectableDistanceMeters = 0.3;
+  //   if (intakeCANrange.getDistance().getValueAsDouble() <= maxDetectableDistanceMeters) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
   }
-
   // public Command runIntakeRollersUntilCANrange() {
   //   return new ParallelDeadlineGroup(null, null)
   // }
@@ -120,9 +149,10 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("IntakeCANRangeDistance", intakeCANrange.getDistance().getValueAsDouble());
-    SmartDashboard.putNumber("Intake Pivot Angle", m_pivotMotor.getPosition().getValueAsDouble());
+    // SmartDashboard.putNumber("IntakeCANRangeDistance", intakeCANrange.getDistance().getValueAsDouble());
+    // SmartDashboard.putNumber("Intake Pivot Angle", m_pivotMotor.getPosition().getValueAsDouble());
     DogLog.log("Intake/IntakeCANrangeDistance", intakeCANrange.getDistance().getValueAsDouble());
+    DogLog.log("Intake/IntakeCANrangeBoolean", intakeCANrange.getIsDetected().getValue());
     DogLog.log("Intake/IntakePivotAngle", m_pivotMotor.getPosition().getValueAsDouble());
   }
 }
