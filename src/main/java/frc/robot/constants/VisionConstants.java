@@ -19,10 +19,10 @@ public class VisionConstants {
 
     // Cam mounted facing left, ~6 cm to the front, ~11.5 cm left of center, and ~19.5 cm up, at a ~45 deg angle
     public static final Transform3d kRobotToLeftAprilCam =
-            new Transform3d(new Translation3d(0.06,0.115, 0.195), new Rotation3d(0, -45.0, -90.0));
+            new Transform3d(new Translation3d(0.06,0.115, 0.195), new Rotation3d(0, -45_deg, -90_deg));
     // Cam mounted TBD
     public static final Transform3d kRobotToRightAprilCam =
-            new Transform3d(new Translation3d(0.06,-0.115, 0.195), new Rotation3d(0, -45.0, 90.0));
+            new Transform3d(new Translation3d(0.06,-0.115, 0.195), new Rotation3d(0, -45_deg, 90_deg));
     // Cam mounted TBD
     public static final Transform3d kRobotToObjectCam =
             new Transform3d(new Translation3d(-4,10.647, 0.5), new Rotation3d(0, 0, 0));
