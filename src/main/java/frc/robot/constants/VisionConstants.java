@@ -18,7 +18,11 @@ public class VisionConstants {
     public static final String kobjectCamName = "ObjectCam"; // Arducam_OV2311USB_Camera
 
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-    public static final Transform3d kRobotToCam =
+    public static final Transform3d kRobotToRightAprilCam =
+            new Transform3d(new Translation3d(0.115,-0.06, 0.195), new Rotation3d(0, 0, 0));
+ public static final Transform3d kRobotToLeftAprilCam =
+            new Transform3d(new Translation3d(-4,10.647, 0.5), new Rotation3d(0, 0, 0));
+ public static final Transform3d kRobotToObjectCam =
             new Transform3d(new Translation3d(-4,10.647, 0.5), new Rotation3d(0, 0, 0));
 
     // The layout of the AprilTags on the field
