@@ -60,7 +60,7 @@ public class Vision extends SubsystemBase {
     aprilCamLeft = new PhotonCamera(VisionConstants.kaprilCamLeftName);
     objectCam = new PhotonCamera(VisionConstants.kobjectCamName);
     photonEstimator =
-          new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToCam);
+          new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToRightAprilCam);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         // ----- Simulation
@@ -80,7 +80,7 @@ public class Vision extends SubsystemBase {
             // targets.
             cameraSim = new PhotonCameraSim(aprilCamRight, cameraProp);
             // Add the simulated camera to view the targets on this simulated field.
-            visionSim.addCamera(cameraSim, VisionConstants.kRobotToCam);
+            visionSim.addCamera(cameraSim, VisionConstants.kRobotToRightAprilCam);
 
             cameraSim.enableDrawWireframe(true);
       }
