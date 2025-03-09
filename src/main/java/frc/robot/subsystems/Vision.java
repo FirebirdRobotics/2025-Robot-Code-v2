@@ -78,7 +78,7 @@ public class Vision extends SubsystemBase {
             cameraProp.setLatencyStdDevMs(15);
             // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
             // targets.
-            cameraSim = new PhotonCameraSim(aprilCamRight, cameraProp);
+            cameraSim = new PhotonCameraSim(aprilCamLeft, cameraProp);
             // Add the simulated camera to view the targets on this simulated field.
             visionSim.addCamera(cameraSim, VisionConstants.kRobotToRightAprilCam);
 
@@ -98,7 +98,7 @@ public class Vision extends SubsystemBase {
      */
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        for (var change : aprilCamRight.getAllUnreadResults()) {
+        for (var change : aprilCamLeft.getAllUnreadResults()) {
             visionEst = photonEstimator.update(change);
             updateEstimationStdDevs(visionEst, change.getTargets());
 
