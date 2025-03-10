@@ -44,7 +44,8 @@ public class Vision extends SubsystemBase {
   private final PhotonCamera aprilCamLeft;
   private final PhotonCamera objectCam;
 
-  private final PhotonPoseEstimator photonEstimator;
+  private final PhotonPoseEstimator photonEstimatorRight;
+  private final PhotonPoseEstimator photonEstimatorLeft;
   private Matrix<N3, N1> curStdDevs;
   CommandSwerveDrivetrain drivetrain;
   
@@ -59,9 +60,12 @@ public class Vision extends SubsystemBase {
     aprilCamRight = new PhotonCamera(VisionConstants.kaprilCamRightName);
     aprilCamLeft = new PhotonCamera(VisionConstants.kaprilCamLeftName);
     objectCam = new PhotonCamera(VisionConstants.kobjectCamName);
-    photonEstimator =
+    photonEstimatorRight =
           new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToRightAprilCam);
-    photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    photonEstimatorLeft =
+          new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToLeftAprilCam);
+    photonEstimatorRight.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    photonEstimatorLeft.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         // ----- Simulation
         if (Robot.isSimulation()) {
@@ -99,7 +103,7 @@ public class Vision extends SubsystemBase {
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
         for (var change : aprilCamRight.getAllUnreadResults()) {
-            visionEst = photonEstimator.update(change);
+            visionEst = photonEstimatorRight.update(change);
             updateEstimationStdDevs(visionEst, change.getTargets());
 
             if (Robot.isSimulation()) {
@@ -137,7 +141,7 @@ public class Vision extends SubsystemBase {
 
             // Precalculation - see how many tags we found, and calculate an average-distance metric
             for (var tgt : targets) {
-                var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+                var tagPose = photonEstimatorRight.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) continue;
                 numTags++;
                 avgDist +=
