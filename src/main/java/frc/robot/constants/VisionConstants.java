@@ -17,12 +17,12 @@ public class VisionConstants {
 
     public static final String kobjectCamName = "ObjectCam"; // Arducam_OV2311USB_Camera
 
-    // Cam mounted facing left, ~6 cm to the front, ~11.5 cm left of center, and ~19.5 cm up, at a ~45 deg angle
+    // Cam mounted 6 in left, 10.647 in forward, and 8 in up @ 0.9731071 deg pitch and 116.3762958 yaw
     public static final Transform3d kRobotToLeftAprilCam =
-            new Transform3d(new Translation3d(0.06,0.115, 0.195), new Rotation3d(0, -45_deg, -90_deg));
-    // Cam mounted TBD
+            new Transform3d(new Translation3d(0.2704338,0.1524, 0.2032), new Rotation3d(0, 0.0169839228695, 2.0311495329798));
+    // Cam mounted 4 in left, 10.647 in forward, and 8 in up @ 0.9731071 deg pitch and 61.3762958 yaw
     public static final Transform3d kRobotToRightAprilCam =
-            new Transform3d(new Translation3d(0.06,-0.115, 0.195), new Rotation3d(0, -45_deg, 90_deg));
+            new Transform3d(new Translation3d(0.2704338,0.1016, 0.2032), new Rotation3d(0, 0.0169839228695, 1.071218444385));
     // Cam mounted TBD
     public static final Transform3d kRobotToObjectCam =
             new Transform3d(new Translation3d(-4,10.647, 0.5), new Rotation3d(0, 0, 0));
