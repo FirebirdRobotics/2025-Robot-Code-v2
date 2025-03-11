@@ -128,7 +128,14 @@ public class Vision extends SubsystemBase {
      *
      * @return An {@link List<EstimatedRobotPose>} with estimated poses, timestamps, and targets.
      */
-    public List<Optional<EstimatedRobotPose>> getEstimatedGlobalPoses() {}
+    public List<Optional<EstimatedRobotPose>> getEstimatedGlobalPoses() {
+      var estPoses = List.of(getEstimatedGlobalPose(aprilCamLeft, photonEstimatorLeft), getEstimatedGlobalPose(aprilCamRight, photonEstimatorRight));
+      Pose3d[] poses = new Pose3d[2];
+      for(int i = 0; i < estPoses.size(); i++){
+        poses[i] = estPoses.get(i).map(p -> p.estimatedPose).orElse(Pose3d.kZero);
+      }
+      return estPoses;
+    }
     
     /**
      * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard
