@@ -97,13 +97,16 @@ public class Vision extends SubsystemBase {
      * <p>Also includes updates for the standard deviations, which can (optionally) be retrieved with
      * {@link getEstimationStdDevs}
      *
+     * @param cam The PhotonCamera to use
+     * @param estimator The PhotonPoseEstimator to use
+     *
      * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
      *     used for estimation.
      */
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonCamera cam, PhotonPoseEstimator estimator) {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        for (var change : aprilCamLeft.getAllUnreadResults()) {
-            visionEst = photonEstimatorLeft.update(change);
+        for (var change : cam.getAllUnreadResults()) {
+            visionEst = estimator.update(change);
             updateEstimationStdDevs(visionEst, change.getTargets());
 
             if (Robot.isSimulation()) {
@@ -119,6 +122,13 @@ public class Vision extends SubsystemBase {
         }
         return visionEst;
     }
+
+    /**
+     * Creates a list of combined pose estimates from both cameras.
+     *
+     * @return An {@link List<EstimatedRobotPose>} with estimated poses, timestamps, and targets.
+     */
+    public List<Optional<EstimatedRobotPose>> getEstimatedGlobalPoses() {}
     
     /**
      * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard
@@ -202,7 +212,7 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // drivetrain.addVisionMeasurement(camera.getLatestResult(), );
-    var visionEst = this.getEstimatedGlobalPose();
+    var visionEst = this.getEstimatedGlobalPose(aprilCamLeft, photonEstimatorLeft);
     visionEst.ifPresent(
                 est -> {
                     // Change our trust in the measurement based on the tags we can see
