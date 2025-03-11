@@ -23,9 +23,9 @@ import frc.robot.constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
   // Need to configure CAN ID's
-  private final TalonFX m_leader = new TalonFX(ElevatorConstants.elevatorLeaderMotorID, "canivore");
-  private final TalonFX m_follower = new TalonFX(ElevatorConstants.elevatorFollowerMotorID, "canivore");
-  private final CANcoder m_CANcoder = new CANcoder(3, "canivore");
+  private final TalonFX m_leader = new TalonFX(ElevatorConstants.elevatorLeaderMotorID, "CANivore");
+  private final TalonFX m_follower = new TalonFX(ElevatorConstants.elevatorFollowerMotorID, "CANivore");
+  private final CANcoder m_CANcoder = new CANcoder(3, "CANivore");
 
   
 
