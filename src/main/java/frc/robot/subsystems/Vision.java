@@ -219,7 +219,7 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // drivetrain.addVisionMeasurement(camera.getLatestResult(), );
-    var visionEst = this.getEstimatedGlobalPose(aprilCamLeft, photonEstimatorLeft);
+    for( var visionEst : this.getEstimatedGlobalPoses() ){
     visionEst.ifPresent(
                 est -> {
                     // Change our trust in the measurement based on the tags we can see
@@ -230,7 +230,7 @@ public class Vision extends SubsystemBase {
                     DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
                 }
                 );
-
+    }
     }
 
     @Override
