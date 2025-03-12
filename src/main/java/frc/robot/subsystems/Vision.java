@@ -35,6 +35,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
@@ -215,18 +216,19 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // drivetrain.addVisionMeasurement(camera.getLatestResult(), );
-    for( Optional<EstimatedRobotPose> visionEst : this.getEstimatedGlobalPoses() ){
-    visionEst.ifPresent(
-                est -> {
-                    // Change our trust in the measurement based on the tags we can see
-                    var estStdDevs = this.getEstimationStdDevs();
+        List<Optional<EstimatedRobotPose>> poses = this.getEstimatedGlobalPoses();
+        for( Optional<EstimatedRobotPose> visionEst : poses ){
+            visionEst.ifPresent(
+                        est -> {
+                            // Change our trust in the measurement based on the tags we can see
+                            var estStdDevs = this.getEstimationStdDevs();
 
-                    drivetrain.addVisionMeasurement(
-                            est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-                    DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
-                }
-                );
-    }
+                            drivetrain.addVisionMeasurement(
+                                    est.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), estStdDevs);
+                            DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
+                        }
+                        );
+        }
     }
 
     @Override
