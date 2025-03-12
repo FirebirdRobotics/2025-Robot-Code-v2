@@ -130,10 +130,6 @@ public class Vision extends SubsystemBase {
      */
     public List<Optional<EstimatedRobotPose>> getEstimatedGlobalPoses() {
       var estPoses = List.of(getEstimatedGlobalPose(aprilCamLeft, photonEstimatorLeft), getEstimatedGlobalPose(aprilCamRight, photonEstimatorRight));
-      Pose3d[] poses = new Pose3d[2];
-      for(int i = 0; i < estPoses.size(); i++){
-        poses[i] = estPoses.get(i).map(p -> p.estimatedPose).orElse(Pose3d.kZero);
-      }
       return estPoses;
     }
     
@@ -219,7 +215,7 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // drivetrain.addVisionMeasurement(camera.getLatestResult(), );
-    for( var visionEst : this.getEstimatedGlobalPoses() ){
+    for( Optional<EstimatedRobotPose> visionEst : this.getEstimatedGlobalPoses() ){
     visionEst.ifPresent(
                 est -> {
                     // Change our trust in the measurement based on the tags we can see
