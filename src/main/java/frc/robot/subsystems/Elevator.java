@@ -19,6 +19,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import dev.doglog.DogLog;
@@ -53,6 +54,7 @@ public class Elevator extends SubsystemBase {
     // elevatorMotorConfigs.Feedback.FeedbackRemoteSensorID = m_CANcoder.getDeviceID();
     // elevatorMotorConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     elevatorMotorConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    elevatorMotorConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     // elevatorMotorConfigs.Feedback.SensorToMechanismRatio = 14.1428571429;
     // distance of the first stage off to 
     elevatorMotorConfigs.Feedback.SensorToMechanismRatio = ((19.65/7.75));
@@ -66,10 +68,11 @@ public class Elevator extends SubsystemBase {
     slot0Configs.kS = 0.0; // Add 0.25 V output to overcome static friction
     slot0Configs.kV = 1.77; // A velocity target of 1 rps results in 0.12 V output
     slot0Configs.kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs.kP = 5; // A positio n error of 2.5 rotations results in 12 V output
+    slot0Configs.kP = 15; // A positio n error of 2.5 rotations results in 12 V output
     // slot0Configs.kI = 0.01; // no output for integrated error
     slot0Configs.kD = 0.0; // A velocity error of 1 rps results in 0.1 V output
     slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
+    
 
 
     
@@ -77,8 +80,8 @@ public class Elevator extends SubsystemBase {
     
     // set Motion Magic settings
     var motionMagicConfigs = elevatorMotorConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = 5; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = 5; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
+    motionMagicConfigs.MotionMagicAcceleration = 20; // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk = 0.0; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     m_leader.getConfigurator().apply(elevatorMotorConfigs);
@@ -100,6 +103,47 @@ public Command testElevator() {
       
       ); 
   }
+
+  public Command goToL4() {
+    return runEnd(
+      () -> goToHeight(ElevatorConstants.L4height),
+      () -> goToHeight(ElevatorConstants.L4height)
+      
+      ); 
+  }
+
+  public Command goToL3() {
+    return runEnd(
+      () -> goToHeight(ElevatorConstants.L3height),
+      () -> goToHeight(ElevatorConstants.L3height)
+      
+      ); 
+  }
+
+  public Command goToL2() {
+    return runEnd(
+      () -> goToHeight(ElevatorConstants.L2height),
+      () -> goToHeight(ElevatorConstants.L2height)
+      
+      ); 
+  }
+
+  public Command goToL1() {
+    return runEnd(
+      () -> goToHeight(ElevatorConstants.L1height),
+      () -> goToHeight(ElevatorConstants.L1height)
+      
+      ); 
+  }
+
+  public Command goToStowedPosition() {
+    return runEnd(
+      () -> goToHeight(ElevatorConstants.stowedPosition),
+      () -> goToHeight(ElevatorConstants.stowedPosition)
+      
+      ); 
+  }
+
   public void configureEncoder() {
 
   }
