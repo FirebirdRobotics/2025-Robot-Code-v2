@@ -28,14 +28,14 @@ public class runIntakeRollersUntillIntakeCANRange extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Intake.setRollerMotorPercentOutput(0.8);
+    m_Intake.setRollerMotorPercentOutput(0.6);
     m_Intake.goToDeployedPosition();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_Intake.setRollerMotorPercentOutput(0);
+    m_Intake.setRollerMotorPercentOutput(0.6);
     m_Intake.goToFramePerimeterPosition();
   }
 
