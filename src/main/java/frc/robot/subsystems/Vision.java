@@ -35,6 +35,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
@@ -82,9 +83,9 @@ public class Vision extends SubsystemBase {
             cameraProp.setLatencyStdDevMs(15);
             // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
             // targets.
-            cameraSim = new PhotonCameraSim(aprilCamRight, cameraProp);
+            cameraSim = new PhotonCameraSim(aprilCamLeft, cameraProp);
             // Add the simulated camera to view the targets on this simulated field.
-            visionSim.addCamera(cameraSim, VisionConstants.kRobotToRightAprilCam);
+            visionSim.addCamera(cameraSim, VisionConstants.kRobotToLeftAprilCam);
 
             cameraSim.enableDrawWireframe(true);
       }
@@ -97,13 +98,16 @@ public class Vision extends SubsystemBase {
      * <p>Also includes updates for the standard deviations, which can (optionally) be retrieved with
      * {@link getEstimationStdDevs}
      *
+     * @param cam The PhotonCamera to use
+     * @param estimator The PhotonPoseEstimator to use
+     *
      * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
      *     used for estimation.
      */
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonCamera cam, PhotonPoseEstimator estimator) {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        for (var change : aprilCamRight.getAllUnreadResults()) {
-            visionEst = photonEstimatorRight.update(change);
+        for (var change : cam.getAllUnreadResults()) {
+            visionEst = estimator.update(change);
             updateEstimationStdDevs(visionEst, change.getTargets());
 
             if (Robot.isSimulation()) {
@@ -118,6 +122,16 @@ public class Vision extends SubsystemBase {
             }
         }
         return visionEst;
+    }
+
+    /**
+     * Creates a list of combined pose estimates from both cameras.
+     *
+     * @return An {@link List<EstimatedRobotPose>} with estimated poses, timestamps, and targets.
+     */
+    public List<Optional<EstimatedRobotPose>> getEstimatedGlobalPoses() {
+      var estPoses = List.of(getEstimatedGlobalPose(aprilCamLeft, photonEstimatorLeft), getEstimatedGlobalPose(aprilCamRight, photonEstimatorRight));
+      return estPoses;
     }
     
     /**
@@ -141,7 +155,7 @@ public class Vision extends SubsystemBase {
 
             // Precalculation - see how many tags we found, and calculate an average-distance metric
             for (var tgt : targets) {
-                var tagPose = photonEstimatorRight.getFieldTags().getTagPose(tgt.getFiducialId());
+                var tagPose = photonEstimatorLeft.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) continue;
                 numTags++;
                 avgDist +=
@@ -202,18 +216,19 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // drivetrain.addVisionMeasurement(camera.getLatestResult(), );
-    var visionEst = this.getEstimatedGlobalPose();
-    visionEst.ifPresent(
-                est -> {
-                    // Change our trust in the measurement based on the tags we can see
-                    var estStdDevs = this.getEstimationStdDevs();
+        List<Optional<EstimatedRobotPose>> poses = this.getEstimatedGlobalPoses();
+        for( Optional<EstimatedRobotPose> visionEst : poses ){
+            visionEst.ifPresent(
+                        est -> {
+                            // Change our trust in the measurement based on the tags we can see
+                            var estStdDevs = this.getEstimationStdDevs();
 
-                    drivetrain.addVisionMeasurement(
-                            est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-                    DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
-                }
-                );
-
+                            drivetrain.addVisionMeasurement(
+                                    est.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), estStdDevs);
+                            DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
+                        }
+                        );
+        }
     }
 
     @Override
