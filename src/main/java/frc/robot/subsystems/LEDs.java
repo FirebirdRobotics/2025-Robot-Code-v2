@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -15,15 +16,17 @@ import frc.robot.lib.trobot5013lib.led.TrobotAddressableLED;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class LEDs extends SubsystemBase {
-  int ledLength = 90;
+  int ledLength = 31;
   int ledPWMPort = 9;
   
   TrobotAddressableLED m_ledStrip = new TrobotAddressableLED(ledPWMPort, ledLength);
   
-  Color white = new Color("fdf0d5");
-  Color red = new Color("c1121f");
-  Color green = new Color("a7c957");
-  Color black = new Color(1,1,1); // Not sure if this will work
+  
+  Color white = new Color(253, 240, 213);
+  Color red = new Color(193, 18, 31);
+  Color green = new Color(167, 201, 87);
+  Color black = new Color(200,1,1); // Not sure if this will work
+  //should be 1 for r value to get roughly black
 
   BlinkingPattern blinkingWhite = new BlinkingPattern(white, 0.2);
   BlinkingPattern blinkingRed = new BlinkingPattern(red, 0.2);
@@ -46,11 +49,69 @@ public class LEDs extends SubsystemBase {
  
   }
 
+  public Command blinkRedThenStayRed() {
+    return runEnd(
+      () -> m_ledStrip.setPattern(blinkingRed),
+      () -> m_ledStrip.setPattern(solidRed)
+    ); 
+  }
+
+  public Command blinkGreenThenStayGreen() {
+    return runEnd(
+      () -> m_ledStrip.setPattern(blinkingGreen),
+      () -> m_ledStrip.setPattern(solidGreen)
+    ); 
+  }
+
+  String switchString = "black";
+
+
+  public Command blinkBlackThenStayBlack() {
+    return runEnd(
+      () -> switchString = "black blinking",
+      () -> switchString = "black blinking"
+    ).withTimeout(1); 
+  }
+
+
   /** Creates a new LEDs. */
-  public LEDs() {}
+  public LEDs() {
+
+  }
+
+
 
   @Override
   public void periodic() {
+    m_ledStrip.setPattern(blinkingRed);
     // This method will be called once per scheduler run
+    switch (switchString) {
+      case "white":
+        
+        break;
+
+      case "red":
+        
+        break;
+
+      case "green":
+        
+        break;
+
+      case "black":
+        m_ledStrip.setPattern(solidBlack);
+        break;
+
+    
+      case "black blinking":
+        m_ledStrip.setPattern(blinkingBlack);
+        break;
+
+
+      default:
+
+        break;
+    }
+    
   }
 }
