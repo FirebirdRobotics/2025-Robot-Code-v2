@@ -8,6 +8,8 @@
  */
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
@@ -16,16 +18,20 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
   // Need to configure CAN ID's
-  private final TalonFX m_leader = new TalonFX(ElevatorConstants.elevatorLeaderMotorID, "canivore");
-  private final TalonFX m_follower = new TalonFX(ElevatorConstants.elevatorFollowerMotorID, "canivore");
-  private final CANcoder m_CANcoder = new CANcoder(3, "canivore");
+  private final TalonFX m_leader = new TalonFX(ElevatorConstants.elevatorLeaderMotorID, "CANivore");
+  private final TalonFX m_follower = new TalonFX(ElevatorConstants.elevatorFollowerMotorID, "CANivore");
+  private final CANcoder m_CANcoder = new CANcoder(3, "CANivore");
 
   
 
@@ -37,7 +43,7 @@ public class Elevator extends SubsystemBase {
 
     CANcoderConfiguration CANCoderConfigs = new CANcoderConfiguration();
     // Need to Configure discontinuity point -- Should be as follows: (positive or negative) number of rotations taken to get max height of elevator
-    CANCoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = -1;
+    // CANCoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = -1;
     // Need to configure depending on which direction encoder moves in while going upwards 
     CANCoderConfigs.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
@@ -45,29 +51,37 @@ public class Elevator extends SubsystemBase {
     var elevatorMotorConfigs = new TalonFXConfiguration();
 
     // Set's the feedback for the motor to be the cancoder
-    elevatorMotorConfigs.Feedback.FeedbackRemoteSensorID = m_CANcoder.getDeviceID();
-    elevatorMotorConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-    elevatorMotorConfigs.Feedback.SensorToMechanismRatio = 0.0;
+    // elevatorMotorConfigs.Feedback.FeedbackRemoteSensorID = m_CANcoder.getDeviceID();
+    // elevatorMotorConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    elevatorMotorConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    elevatorMotorConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    // elevatorMotorConfigs.Feedback.SensorToMechanismRatio = 14.1428571429;
+    // distance of the first stage off to 
+    elevatorMotorConfigs.Feedback.SensorToMechanismRatio = ((19.65/7.75));
+
 
 
 
     // set slot 0 gains
     var slot0Configs = elevatorMotorConfigs.Slot0;
-    slot0Configs.kG = 0.0; // 
+    slot0Configs.kG = 0.32; // 
     slot0Configs.kS = 0.0; // Add 0.25 V output to overcome static friction
-    slot0Configs.kV = 0.0; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kV = 1.77; // A velocity target of 1 rps results in 0.12 V output
     slot0Configs.kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs.kP = 0.0; // A positio n error of 2.5 rotations results in 12 V output
-    slot0Configs.kI = 0.0; // no output for integrated error
+    slot0Configs.kP = 15; // A positio n error of 2.5 rotations results in 12 V output
+    // slot0Configs.kI = 0.01; // no output for integrated error
     slot0Configs.kD = 0.0; // A velocity error of 1 rps results in 0.1 V output
+    slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
+    
+
 
     
 
     
     // set Motion Magic settings
     var motionMagicConfigs = elevatorMotorConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = 0.0; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = 0.0; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
+    motionMagicConfigs.MotionMagicAcceleration = 20; // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk = 0.0; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     m_leader.getConfigurator().apply(elevatorMotorConfigs);
@@ -79,7 +93,55 @@ public class Elevator extends SubsystemBase {
 
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
 
-    m_leader.setControl(m_request.withPosition(100));
+    m_leader.setControl(m_request.withPosition(inches));
+  }
+
+public Command testElevator() {
+    return runEnd(
+      () -> goToHeight(4.5),
+      () -> goToHeight(4.5)
+      
+      ); 
+  }
+
+  public Command goToL4() {
+    return runEnd(
+      () -> goToHeight(ElevatorConstants.L4height),
+      () -> goToHeight(ElevatorConstants.L4height)
+      
+      ); 
+  }
+
+  public Command goToL3() {
+    return runEnd(
+      () -> goToHeight(ElevatorConstants.L3height),
+      () -> goToHeight(ElevatorConstants.L3height)
+      
+      ); 
+  }
+
+  public Command goToL2() {
+    return runEnd(
+      () -> goToHeight(ElevatorConstants.L2height),
+      () -> goToHeight(ElevatorConstants.L2height)
+      
+      ); 
+  }
+
+  public Command goToL1() {
+    return runEnd(
+      () -> goToHeight(ElevatorConstants.L1height),
+      () -> goToHeight(ElevatorConstants.L1height)
+      
+      ); 
+  }
+
+  public Command goToStowedPosition() {
+    return runEnd(
+      () -> goToHeight(ElevatorConstants.stowedPosition),
+      () -> goToHeight(ElevatorConstants.stowedPosition)
+      
+      ); 
   }
 
   public void configureEncoder() {
@@ -89,5 +151,9 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    DogLog.log("Elevator position", m_leader.getPosition().getValueAsDouble());
+    DogLog.log("Elevator Velocity", m_leader.getVelocity().getValueAsDouble());
+    DogLog.log("Elevator Acceleration", m_leader.getAcceleration().getValueAsDouble());
+
   }
 }

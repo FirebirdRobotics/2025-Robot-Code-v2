@@ -24,9 +24,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
-  private final TalonFX m_pivotMotor = new TalonFX(13, "CANivore");
-  private final TalonFX m_rollerMotor = new TalonFX(14, "CANivore");
-  private final CANrange intakeCANrange = new CANrange(20, "CANivore");
+  private final TalonFX m_pivotMotor = new TalonFX(41, "CANivore");
+  private final TalonFX m_rollerMotor = new TalonFX(42, "CANivore");
+  private final CANrange intakeCANrange = new CANrange(45, "CANivore");
 
 
   /** Creates a new Intake. */

@@ -27,12 +27,17 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Commands.runIntakeRollersUntillIntakeCANRange;
 import frc.robot.constants.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
 // import frc.robot.subsystems.TestIntake;
 import frc.robot.subsystems.Vision;
 
@@ -53,6 +58,8 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
+    CommandGenericHID  buttonBoardRight = new CommandGenericHID(2);
+
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -60,9 +67,15 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
+    Elevator m_Elevator = new Elevator();
+
+    EndEffector m_EndEffector = new EndEffector();
+
     Intake intake = new Intake();
 
     Vision vision;
+
+    LEDs m_Leds = new LEDs();
 
     Command m_RunIntakeRollersUntillIntakeCANRange = new runIntakeRollersUntillIntakeCANRange(intake);
     
@@ -130,9 +143,19 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        joystick.rightBumper().whileTrue(intake.setRollerMotorPercentOutputCommand(0.4));
-        joystick.leftBumper().whileTrue(intake.testIntakeDeployAndUndeploy());
-        // joystick.rightBumper().whileTrue(m_TestIntake.setIntakePowerCommand(0.7));
+        // joystick.rightBumper().whileTrue(intake.setRollerMotorPercentOutputCommand(0.4));
+        // joystick.leftBumper().whileTrue(intake.testIntakeDeployAndUndeploy());
+        
+        joystick.rightBumper().whileTrue(m_RunIntakeRollersUntillIntakeCANRange);
+        // buttonBoardRight.button(1).whileTrue(m_Elevator.goToL1());
+        buttonBoardRight.button(1).whileTrue(Commands.parallel(m_Elevator.goToL1(),m_EndEffector.goToL1()));
+
+        buttonBoardRight.button(2).whileTrue(Commands.parallel(m_Elevator.goToL2(),m_EndEffector.goToL2()));
+        buttonBoardRight.button(3).whileTrue(Commands.parallel(m_Elevator.goToL3(),m_EndEffector.goToL3()));
+        buttonBoardRight.button(4).whileTrue(Commands.parallel(m_Elevator.goToL4(),m_EndEffector.goToL4()));
+
+        buttonBoardRight.button(5).whileTrue(Commands.parallel(m_Elevator.goToStowedPosition(),m_EndEffector.goToStowed()));
+
         // joystick.leftBumper().whileTrue(m_TestIntake.setIntakePowerCommand(-0.7));
         
     }

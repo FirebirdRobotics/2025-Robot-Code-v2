@@ -1,8 +1,18 @@
 package frc.robot.constants;
 
 public class ElevatorConstants {
-    public static final int elevatorLeaderMotorID = 1;
-    public static final int elevatorFollowerMotorID = 2;
-    public static final int elevatorCANcoderID = 3;
+    public static final int elevatorLeaderMotorID = 46;
+    public static final int elevatorFollowerMotorID = 48;
+    public static final int elevatorCANcoderID = 60;
+
+    public static final double L4height = 23.39111328125;
+    public static final double L3height = 14.962646484375;
+    public static final double L2height = 10.677;
+    public static final double L1height = 4.5;
+
+    public static final double stowedPosition = 0;
+
+
+
 
 }
