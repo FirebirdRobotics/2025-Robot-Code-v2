@@ -7,19 +7,32 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Starting Position To Coral Reef"
+            "pathName": "Left Barge To Front Left Reef"
           }
         },
         {
-          "type": "wait",
+          "type": "sequential",
           "data": {
-            "waitTime": 1.5
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L1 Elevator and EE to Proper Positions"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Outake Coral"
+                }
+              }
+            ]
           }
         }
       ]
