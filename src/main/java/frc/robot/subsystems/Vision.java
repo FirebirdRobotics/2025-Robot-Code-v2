@@ -226,7 +226,7 @@ public class Vision extends SubsystemBase {
                             var estStdDevs = this.getEstimationStdDevs();
 
                             drivetrain.addVisionMeasurement(
-                                    est.estimatedPose.toPose2d(), Util.fpgaToCurrentTime(Timer.getFPGATimestamp()), estStdDevs);
+                                    est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()), estStdDevs);
                             DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
                         }
                         );
