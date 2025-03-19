@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Timer;
+import com.ctre.phoenix6.Utils;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
@@ -109,7 +110,7 @@ public class Vision extends SubsystemBase {
         for (var change : cam.getAllUnreadResults()) {
             visionEst = estimator.update(change);
             updateEstimationStdDevs(visionEst, change.getTargets());
-
+            
             if (Robot.isSimulation()) {
                 visionEst.ifPresentOrElse(
                         est ->
@@ -224,7 +225,8 @@ public class Vision extends SubsystemBase {
                             var estStdDevs = this.getEstimationStdDevs();
 
                             drivetrain.addVisionMeasurement(
-                                    est.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), estStdDevs);
+                                    // est.estimatedPose.toPose2d(), Timer.getFPGATimestamp(), estStdDevs);
+                                    est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()), estStdDevs);
                             DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
                         }
                         );
