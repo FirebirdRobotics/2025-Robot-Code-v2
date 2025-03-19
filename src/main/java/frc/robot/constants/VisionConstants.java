@@ -19,10 +19,10 @@ public class VisionConstants {
 
     // Cam mounted 6 in left, 10.647 in forward, and 8 in up @ 0.9731071 deg pitch and 116.3762958 yaw
     public static final Transform3d kRobotToLeftAprilCam =
-            new Transform3d(new Translation3d(-0.2704338,0.1524, 0.2032), new Rotation3d(0, 0.0169839228695, 2.0311495329798+Units.degreesToRadians(45)));
+            new Transform3d(new Translation3d(-0.2704338,0.1524, 0.2032), new Rotation3d(0, 0.0169839228695, 2.0311495329798-Units.degreesToRadians(33)));
     // Cam mounted 4 in left, 10.647 in forward, and 8 in up @ 0.9731071 deg pitch and 61.3762958 yaw
     public static final Transform3d kRobotToRightAprilCam =
-            new Transform3d(new Translation3d(-0.2704338,0.1016, 0.2032), new Rotation3d(0, 0.0169839228695, 1.071218444385+Units.degreesToRadians(45)));
+            new Transform3d(new Translation3d(-0.2704338,0.1016, 0.2032), new Rotation3d(0, 0.0169839228695, 1.071218444385+Units.degreesToRadians(20)));
     // Cam mounted TBD
     public static final Transform3d kRobotToObjectCam =
             new Transform3d(new Translation3d(-4,10.647, 0.5), new Rotation3d(0, 0, 0));
@@ -37,8 +37,8 @@ public class VisionConstants {
 //     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
 // The values bellow were taken from pantherbots robot
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 7);
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 2);
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1, 1, 2);
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 0.5);
 
 
 }
