@@ -59,6 +59,11 @@ public class Elevator extends SubsystemBase {
     // distance of the first stage off to 
     elevatorMotorConfigs.Feedback.SensorToMechanismRatio = ((19.65/7.75));
 
+    elevatorMotorConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    elevatorMotorConfigs.CurrentLimits.StatorCurrentLimit = 50;
+
+    elevatorMotorConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    elevatorMotorConfigs.CurrentLimits.SupplyCurrentLimit = 50;
 
 
 
@@ -81,7 +86,7 @@ public class Elevator extends SubsystemBase {
     // set Motion Magic settings
     var motionMagicConfigs = elevatorMotorConfigs.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = 20; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicConfigs.MotionMagicAcceleration = 30; // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk = 0.0; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     m_leader.getConfigurator().apply(elevatorMotorConfigs);
@@ -97,56 +102,39 @@ public class Elevator extends SubsystemBase {
   }
 
 public Command testElevator() {
-    return runEnd(
-      () -> goToHeight(4.5),
-      () -> goToHeight(4.5)
-      
-      ); 
+
+    return runOnce(() -> goToHeight(4.5));
+
+
+    
   }
 
   public Command goToL4() {
-    return runEnd(
-      () -> goToHeight(ElevatorConstants.L4height),
-      () -> goToHeight(ElevatorConstants.L4height)
-      
-      ); 
+    
+    return runOnce(() -> goToHeight(ElevatorConstants.L4height));
+
   }
 
   public Command goToL3() {
-    return runEnd(
-      () -> goToHeight(ElevatorConstants.L3height),
-      () -> goToHeight(ElevatorConstants.L3height)
-      
-      ); 
+    return runOnce(() -> goToHeight(ElevatorConstants.L3height));
+    
   }
 
   public Command goToL2() {
-    return runEnd(
-      () -> goToHeight(ElevatorConstants.L2height),
-      () -> goToHeight(ElevatorConstants.L2height)
-      
-      ); 
+    return runOnce(() -> goToHeight(ElevatorConstants.L2height));
+    
   }
 
   public Command goToL1() {
-    return runEnd(
-      () -> goToHeight(ElevatorConstants.L1height),
-      () -> goToHeight(ElevatorConstants.L1height)
-      
-      ); 
+    return runOnce(() -> goToHeight(ElevatorConstants.L1height));
+
   }
 
   public Command goToStowedPosition() {
-    return runEnd(
-      () -> goToHeight(ElevatorConstants.stowedPosition),
-      () -> goToHeight(ElevatorConstants.stowedPosition)
-      
-      ); 
+    return runOnce(() -> goToHeight(ElevatorConstants.stowedPosition));
   }
 
-  public void configureEncoder() {
 
-  }
 
   @Override
   public void periodic() {
