@@ -5,7 +5,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANrange;
@@ -22,14 +24,30 @@ import frc.robot.constants.EndEffectorConstants;
 import frc.robot.constants.IntakeConstants;
 
 public class EndEffector extends SubsystemBase {
-    // Need to configure CAN ID's
+    // Need to configure CAN ID for roller
+  private final TalonFX m_endEffectorRollers = new TalonFX(40, "CANivore");
+  
   private final TalonFX m_endEffectorPivot = new TalonFX(47, "CANivore");
   private final CANcoder m_CANcoder = new CANcoder(43, "CANivore");
 
-  CANrange endEffectorCANrange = new CANrange(102);
+  private final CANrange endEffectorOuterCANrange = new CANrange(50, "CANivore");
+  private final CANrange endEffectorInnerCANrange = new CANrange(51, "CANivore");
+
 
   /** Creates a new EndEffector. */
   public EndEffector() {
+    var endEffectorOuterCANrangeConfigs = new CANrangeConfiguration();
+    var endEffectorInnerCANrangeConfigs = new CANrangeConfiguration();
+
+    // Max distance away from sensor coral can be while still considering it "detected" distance units is meters
+    endEffectorOuterCANrangeConfigs.ProximityParams.ProximityThreshold = 0.1;
+    endEffectorInnerCANrangeConfigs.ProximityParams.ProximityThreshold = 0.1;
+
+    endEffectorOuterCANrange.getConfigurator().apply(endEffectorOuterCANrangeConfigs);
+    endEffectorInnerCANrange.getConfigurator().apply(endEffectorInnerCANrangeConfigs);
+
+    
+
 
     CANcoderConfiguration CANCoderConfigs = new CANcoderConfiguration();
     
@@ -45,6 +63,13 @@ public class EndEffector extends SubsystemBase {
     endEffectorPivotConfigs.Feedback.FeedbackRemoteSensorID = m_CANcoder.getDeviceID();
     endEffectorPivotConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     endEffectorPivotConfigs.Feedback.SensorToMechanismRatio = 1;
+
+    endEffectorPivotConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    endEffectorPivotConfigs.CurrentLimits.StatorCurrentLimit = 50;
+
+    endEffectorPivotConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    endEffectorPivotConfigs.CurrentLimits.SupplyCurrentLimit = 50;
+
 
 
 
@@ -64,7 +89,17 @@ public class EndEffector extends SubsystemBase {
     motionMagicConfigs.MotionMagicAcceleration = 5; // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk = 0.0; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-    
+    var endEffectorRollerConfigs = new TalonFXConfiguration();
+    endEffectorRollerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    endEffectorRollerConfigs.CurrentLimits.StatorCurrentLimit = 50;
+
+    endEffectorRollerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    endEffectorRollerConfigs.CurrentLimits.SupplyCurrentLimit = 50;
+
+    m_endEffectorRollers.getConfigurator().apply(endEffectorRollerConfigs);
+
+
+
 
   }
 
@@ -81,71 +116,100 @@ public class EndEffector extends SubsystemBase {
   }
 
   public Command testEndEffector(double angle) {
-    return runEnd(
-      () -> goToAngle(angle),
-      () -> goToAngle(angle)
-      
-      ); 
+    return runOnce(() -> goToAngle(angle));
   }
 
 
   public Command goToL4() {
-    return runEnd(
-      () -> goToAngle(EndEffectorConstants.L4Angle),
-      () -> goToAngle(EndEffectorConstants.L4Angle)
-      
-      ); 
+    return runOnce(() -> goToAngle(EndEffectorConstants.L4Angle));
+
   }
 
   public Command goToL3() {
-    return runEnd(
-      () -> goToAngle(EndEffectorConstants.L3Angle),
-      () -> goToAngle(EndEffectorConstants.L3Angle)
-      
-      ); 
+    return runOnce(() -> goToAngle(EndEffectorConstants.L3Angle));
   }
 
   public Command goToL2() {
-    return runEnd(
-      () -> goToAngle(EndEffectorConstants.L2Angle),
-      () -> goToAngle(EndEffectorConstants.L2Angle)
-      
-      ); 
+    return runOnce(() -> goToAngle(EndEffectorConstants.L2Angle));
+
   }
 
   public Command goToL1() {
-    return runEnd(
-      () -> goToAngle(EndEffectorConstants.L1Angle),
-      () -> goToAngle(EndEffectorConstants.L1Angle)
-      
-      ); 
+    return runOnce(() -> goToAngle(EndEffectorConstants.L1Angle));
+
   }
 
   public Command goToStowed() {
-    return runEnd(
-      () -> goToAngle(EndEffectorConstants.stowedAngle),
-      () -> goToAngle(EndEffectorConstants.stowedAngle)
-      
-      ); 
-  }
-
-
-
-
-  public boolean getEndEffectorCANrange() {
-    // Max distance away from sensor coral can be while still considering it "detected" distance units is meters
-    double maxDetectableDistanceMeters = 0.01;
-    if (endEffectorCANrange.getDistance().getValueAsDouble() <= maxDetectableDistanceMeters) {
-      return true;
+      return runOnce(() -> goToAngle(EndEffectorConstants.stowedAngle));
     }
-    return false;
+
+
+
+
+  public boolean getendEffectorOuterCANrange() {
+  
+    return endEffectorOuterCANrange.getIsDetected().getValue();
   }
+
+  public boolean getendEffectorInnerCANrange() {
+  
+    return endEffectorInnerCANrange.getIsDetected().getValue();
+  }
+
+
+  
+
+    public void setRollerMotorPercentOutput(double outputPercent) {
+      m_endEffectorRollers.setControl(new DutyCycleOut(outputPercent));
+  }
+
+  
+  public Command setRollerMotorPercentOutputAndThenTo0Command(double power) {
+    
+    return runEnd(
+      () -> setRollerMotorPercentOutput(power),
+      () -> setRollerMotorPercentOutput(0)
+    ); 
+
+  }
+
+  public Command setRollerMotorPercentOutputCommand(double power) {
+
+    return runOnce(() -> setRollerMotorPercentOutput(power));
+
+  }
+
+  // public void juggleCoralTillBothCanRangesTrue() {
+  //   if (!(getendEffectorInnerCANrange() && (getendEffectorOuterCANrange()))) {
+  //     if (getendEffectorInnerCANrange() && (getendEffectorOuterCANrange() == false)) {
+  //       setRollerMotorPercentOutput(-0.2);
+  //     }
+  //     if ((getendEffectorInnerCANrange() == false) && (getendEffectorOuterCANrange())) {
+  //       setRollerMotorPercentOutput(0.2);
+  //     }
+  
+  //   }
+
+  //   if (getendEffectorInnerCANrange() && (getendEffectorOuterCANrange() == false)) {
+  //     setRollerMotorPercentOutput(-0.2);
+  //   }
+  //   if ((getendEffectorInnerCANrange() == false) && (getendEffectorOuterCANrange())) {
+  //     setRollerMotorPercentOutput(0.2);
+  //   }
+
+  // }
+
+
+
 
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    DogLog.log("End Effector rotations", m_endEffectorPivot.getPosition().getValueAsDouble());
+    DogLog.log("EndEffector/End Effector rotations", m_endEffectorPivot.getPosition().getValueAsDouble());
+    DogLog.log("EndEffector/endEffectorOuterCANrangeDistance", endEffectorOuterCANrange.getDistance().getValueAsDouble());
+    DogLog.log("EndEffector/endEffectorOuterCANrangeBoolean", endEffectorOuterCANrange.getIsDetected().getValue());
+
     // DogLog.log("Elevator Velocity", m_leader.getVelocity().getValueAsDouble());
     // DogLog.log("Elevator Acceleration", m_leader.getAcceleration().getValueAsDouble());
 
