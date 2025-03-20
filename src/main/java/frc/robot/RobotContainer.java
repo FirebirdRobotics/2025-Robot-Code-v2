@@ -49,7 +49,7 @@ import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 // import frc.robot.subsystems.TestIntake;
-// import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
     // TestIntake m_TestIntake = new TestIntake();
@@ -83,7 +83,7 @@ public class RobotContainer {
 
     Intake intake = new Intake();
 
-    // Vision vision;
+    Vision vision;
 
     LEDs m_Leds = new LEDs();
 
@@ -106,6 +106,8 @@ public class RobotContainer {
     public RobotContainer() {
 
         NamedCommands.registerCommand("L1 Elevator and EE to Proper Positions", Commands.parallel(m_Elevator.goToL1(),m_EndEffector.goToL1()));
+        NamedCommands.registerCommand("L3 Elevator and EE to Proper Positions", Commands.parallel(m_Elevator.goToL3(),m_EndEffector.goToL3()));
+
         NamedCommands.registerCommand("L4 Elevator and EE to Proper Positions", Commands.parallel(m_Elevator.goToL4(),m_EndEffector.goToL4()));
 
         NamedCommands.registerCommand("Outake Coral", m_EndEffector.setRollerMotorPercentOutputAndThenTo0Command( 0.35).withTimeout(3));
@@ -121,7 +123,7 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-        // vision = new Vision(drivetrain);
+        vision = new Vision(drivetrain);
 
         configureBindings();
     }
