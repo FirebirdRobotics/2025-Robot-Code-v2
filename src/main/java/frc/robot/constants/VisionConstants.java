@@ -4,7 +4,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
@@ -26,6 +28,14 @@ public class VisionConstants {
     // Cam mounted TBD
     public static final Transform3d kRobotToObjectCam =
             new Transform3d(new Translation3d(-4,10.647, 0.5), new Rotation3d(0, 0, 0));
+
+/*Stuff for pantherbotics auto align *************************************************************** */
+        public static final Transform2d kLeftTransform = new Transform2d(Units.inchesToMeters(20), Units.inchesToMeters(-6.5), Rotation2d.fromDegrees(-180));
+        public static final Transform2d kRightTransform = new Transform2d(Units.inchesToMeters(20), Units.inchesToMeters(6.5), Rotation2d.fromDegrees(-180));
+        public static final Transform2d kCenterTransform = new Transform2d(Units.inchesToMeters(17), Units.inchesToMeters(0), Rotation2d.fromDegrees(-180));
+
+        public static final double kDistToleranceMeters = Units.inchesToMeters(1.75);
+/******************************************************************************************************** */
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =

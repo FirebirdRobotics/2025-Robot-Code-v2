@@ -25,7 +25,7 @@ public class LEDs extends SubsystemBase {
   Color white = new Color(253, 240, 213);
   Color red = new Color(193, 18, 31);
   Color green = new Color(167, 201, 87);
-  Color black = new Color(200,1,1); // Not sure if this will work
+  Color black = new Color(1,1,1); // Not sure if this will work
   //should be 1 for r value to get roughly black
 
   BlinkingPattern blinkingWhite = new BlinkingPattern(white, 0.2);
@@ -66,11 +66,11 @@ public class LEDs extends SubsystemBase {
   String switchString = "black";
 
 
-  public Command blinkBlackThenStayBlack() {
+  public Command blinkBlackThenStayBlack(double blinkingTime) {
     return runEnd(
       () -> switchString = "black blinking",
       () -> switchString = "black blinking"
-    ).withTimeout(1); 
+    ).withTimeout(blinkingTime); 
   }
 
 
@@ -79,39 +79,46 @@ public class LEDs extends SubsystemBase {
 
   }
 
+  enum colorSwitchCase {
+    WHITE,
+    RED,
+    BLACK
+  }
 
 
   @Override
   public void periodic() {
     m_ledStrip.setPattern(blinkingRed);
-    // This method will be called once per scheduler run
-    switch (switchString) {
-      case "white":
-        
-        break;
 
-      case "red":
+    // m_ledStrip.setPattern(blinkingRed);
+    // // This method will be called once per scheduler run
+    // switch (switchString) {
+    //   case "white":
         
-        break;
+    //     break;
 
-      case "green":
+    //   case "red":
         
-        break;
+    //     break;
 
-      case "black":
-        m_ledStrip.setPattern(solidBlack);
-        break;
+    //   case "green":
+        
+    //     break;
+
+    //   case "black":
+    //     m_ledStrip.setPattern(solidBlack);
+    //     break;
 
     
-      case "black blinking":
-        m_ledStrip.setPattern(blinkingBlack);
-        break;
+    //   case "black blinking":
+    //     m_ledStrip.setPattern(blinkingBlack);
+    //     break;
 
 
-      default:
+    //   default:
 
-        break;
-    }
+    //     break;
+    // }
     
   }
 }

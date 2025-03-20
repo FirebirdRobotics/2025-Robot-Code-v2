@@ -34,11 +34,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Commands.AlignToReef;
 // import frc.robot.Commands.IntakingWithIntakeUpWhileCoralInBot;
 import frc.robot.Commands.intakeUntilendEffectorOuterCANrange;
 import frc.robot.Commands.intakeUntillIntakeCANRange;
 import frc.robot.Commands.juggleCoralTillRight;
 import frc.robot.Commands.runEndEffectorUntilEndEffectorOuterCANrange;
+import frc.robot.Commands.AlignToReef.ReefSide;
 import frc.robot.Commands.runEndEffectorUntilEndEffectorOuterCANrange;
 import frc.robot.constants.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -47,7 +49,7 @@ import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 // import frc.robot.subsystems.TestIntake;
-import frc.robot.subsystems.Vision;
+// import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
     // TestIntake m_TestIntake = new TestIntake();
@@ -81,7 +83,7 @@ public class RobotContainer {
 
     Intake intake = new Intake();
 
-    Vision vision;
+    // Vision vision;
 
     LEDs m_Leds = new LEDs();
 
@@ -119,7 +121,7 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-        vision = new Vision(drivetrain);
+        // vision = new Vision(drivetrain);
 
         configureBindings();
     }
@@ -168,7 +170,7 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        // joystick.rightBumper().whileTrue(intake.setRollerMotorPercentOutputCommand(0.4));
+        joystick.rightBumper().whileTrue(new AlignToReef(drivetrain, ReefSide.LEFT, false));
         // joystick.leftBumper().whileTrue(intake.testIntakeDeployAndUndeploy());
         
         // joystick.leftBumper().whileTrue(Commands.sequence(m_intakeUntilendEffectorOuterCANrange));
