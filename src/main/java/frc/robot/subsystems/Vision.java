@@ -41,7 +41,6 @@
 // import edu.wpi.first.wpilibj.Timer;
 // import com.ctre.phoenix6.Utils;
 
-// import com.ctre.phoenix6.Utils;
 
 // public class Vision extends SubsystemBase {
 //   /** Creates a new Vision. */
@@ -170,14 +169,21 @@
 //         }
 //     }
 
-// public Optional<Transform3d> robotToTag(PhotonTrackedTarget target){
+// public Optional<Transform3d> robotToTag(Pose3d robot, PhotonTrackedTarget target){
 //     int id = target.getFiducialId();
 //     if(id == -1){
 //         return Optional.empty();
 //     }
 
-//     Optional<Pose3d> aprilPose = Optional.empty();
-//     aprilPose = AprilTagFieldLayout.getTagPose(id);
+//     Optional<Pose3d> aprilPose = VisionConstants.kTagLayout.getTagPose(id);
+
+//     if(aprilPose.isPresent()){
+//         Transform3d transf = new Transform3d(robot, aprilPose);
+//         return Optional.of(transf);
+//     }
+//     else{
+//         return Optional.empty();
+//     }
 // }
 
 //     /**
