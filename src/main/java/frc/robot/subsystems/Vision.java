@@ -32,6 +32,7 @@
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Pose3d;
 // import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.geometry.Rotation3d;
 // import edu.wpi.first.math.geometry.Transform3d;
 // import edu.wpi.first.math.numbers.N1;
 // import edu.wpi.first.math.numbers.N3;
@@ -178,7 +179,7 @@
 //     Optional<Pose3d> aprilPose = VisionConstants.kTagLayout.getTagPose(id);
 
 //     if(aprilPose.isPresent()){
-//         Transform3d transf = new Transform3d(robot, aprilPose);
+//         Transform3d transf = new Transform3d(robot, aprilPose.get());
 //         return Optional.of(transf);
 //     }
 //     else{
@@ -278,9 +279,21 @@
 //                             //drivetrain.addVisionMeasurement(
 //                             //        est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()), estStdDevs);
 //                             DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
+
+//                             // Give a visual cue for alignment to reef
+//                             var i = getClosestAprilTag();
+//                             if(i.isPresent()){
+//                                 var t = robotToTag(est.estimatedPose, i.get());
+//                                 if(t.isPresent()){
+//                                     Rotation3d r = t.get().getRotation();
+//                                     DogLog.log("Alignment", r.getAngle());
+//                                 }
+//                             }
 //                         }
 //                         );
 //         }
+
+        
 //     }
 
 //     @Override
