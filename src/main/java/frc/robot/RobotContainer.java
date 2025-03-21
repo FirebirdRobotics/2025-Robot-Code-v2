@@ -20,8 +20,8 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
-import dev.doglog.DogLog;
-import dev.doglog.DogLogOptions;
+// import dev.doglog.DogLog;
+// import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -66,7 +66,7 @@ public class RobotContainer {
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     CommandGenericHID  buttonBoardRight = new CommandGenericHID(2);
     CommandGenericHID  buttonBoardLeft = new CommandGenericHID(1);
@@ -83,9 +83,11 @@ public class RobotContainer {
 
     Elevator m_Elevator = new Elevator();
 
-    EndEffector m_EndEffector = new EndEffector();
-
     Intake intake = new Intake(m_Leds);
+
+
+    EndEffector m_EndEffector = new EndEffector(m_Leds);
+
 
     // Vision vision;
 
@@ -118,10 +120,10 @@ public class RobotContainer {
         FollowPathCommand.warmupCommand().schedule();
 
         
-        DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withNtPublish(true));
-        DogLog.setPdh(new PowerDistribution());
+        // DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withNtPublish(true));
+        // DogLog.setPdh(new PowerDistribution());
 
-        DogLog.log("ExampleLog", "Hello world!");
+        // DogLog.log("ExampleLog", "Hello world!");
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -173,7 +175,7 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         // joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
+        // drivetrain.registerTelemetry(logger::telemeterize);
 
         joystick.rightBumper().whileTrue(new AlignToReef(drivetrain, ReefSide.LEFT, false));
         // joystick.leftBumper().whileTrue(intake.testIntakeDeployAndUndeploy());
