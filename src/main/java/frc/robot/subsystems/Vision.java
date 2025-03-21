@@ -187,12 +187,31 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
     Optional<Pose3d> aprilPose = VisionConstants.kTagLayout.getTagPose(id);
 
     if(aprilPose.isPresent()){
-        Transform3d transf = new Transform3d(robot, aprilPose.get());
+        double x0 = aprilPose.get().getX();
+        double y0 = aprilPose.get().getY();
+        double x1 = robot.getX();
+        double y1 = robot.getY();
+        double theta = aprilPose.get().getRotation().getAngle();
+
+        double x0p = (x0*Math.cos(theta))-(y0*Math.sin(theta));
+        double y0p = (x0*Math.sin(theta))+(y0*Math.cos(theta));
+        double x1p = (x1*Math.cos(theta))-(y1*Math.sin(theta));
+        double y1p = (x1*Math.sin(theta))+(y1*Math.cos(theta));
+
+        Rotation2d norotate = new Rotation2d(0);
+        Pose2d apose2 = new Pose2d(x0p, y0p, norotate);
+        Pose2d rpose2 = new Pose2d(x1p, y1p, norotate);
+
+        Pose3d apose = new Pose3d(apose2);
+        Pose3d rpose = new Pose3d(rpose2);
+
+        Transform3d transf = new Transform3d(apose, rpose);
         return Optional.of(transf);
     }
     else{
         return Optional.empty();
     }
+
 }
 
     /**
@@ -294,6 +313,7 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
                             if(i.isPresent()){
                                 var t = robotToTag(drivetrain.getState().Pose, i.get());
                                 if(t.isPresent()){
+                                    DogLog.log("Alignment Values", t.get());
                                     if(Math.abs(t.get().getX()) <= 0.125){
                                         DogLog.log("Aligned", true);
                                     }else{
