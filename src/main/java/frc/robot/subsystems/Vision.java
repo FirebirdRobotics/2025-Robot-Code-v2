@@ -314,7 +314,7 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
                                 var t = robotToTag(drivetrain.getState().Pose, i.get());
                                 if(t.isPresent()){
                                     DogLog.log("Alignment Values", t.get());
-                                    if(Math.abs(t.get().getX()) <= 0.125){
+                                    if(Math.abs(t.get().getY()) <= 0.125){
                                         DogLog.log("Aligned", true);
                                     }else{
                                         DogLog.log("Aligned", false);
