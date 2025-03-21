@@ -294,8 +294,11 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
                             if(i.isPresent()){
                                 var t = robotToTag(drivetrain.getState().Pose, i.get());
                                 if(t.isPresent()){
-                                    Rotation3d r = t.get().getRotation();
-                                    DogLog.log("Alignment", Math.abs(Units.radiansToDegrees(r.getAngle())));
+                                    if(Math.abs(t.get().getX()) <= 0.125){
+                                        DogLog.log("Aligned", true);
+                                    }else{
+                                        DogLog.log("Aligned", false);
+                                    }
                                 }
                             }
                         }
