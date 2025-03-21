@@ -35,8 +35,10 @@ public class EndEffector extends SubsystemBase {
   private final CANrange endEffectorInnerCANrange = new CANrange(51, "CANivore");
 
 
+  LEDs m_LEDs;
   /** Creates a new EndEffector. */
-  public EndEffector() {
+  public EndEffector(LEDs leds) {
+    m_LEDs = leds;
     var endEffectorOuterCANrangeConfigs = new CANrangeConfiguration();
     var endEffectorInnerCANrangeConfigs = new CANrangeConfiguration();
 
@@ -220,6 +222,12 @@ public class EndEffector extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (getendEffectorInnerCANrange() && getendEffectorOuterCANrange()) {
+      m_LEDs.setRed();
+    }
+
+
+
     // This method will be called once per scheduler run
     // DogLog.log("EndEffector/End Effector rotations", m_endEffectorPivot.getPosition().getValueAsDouble());
     // DogLog.log("EndEffector/endEffectorOuterCANrangeDistance", endEffectorOuterCANrange.getDistance().getValueAsDouble());

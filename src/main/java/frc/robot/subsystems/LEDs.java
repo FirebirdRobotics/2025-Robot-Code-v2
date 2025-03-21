@@ -16,7 +16,7 @@ import frc.robot.lib.trobot5013lib.led.TrobotAddressableLED;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class LEDs extends SubsystemBase {
-  int ledLength = 31;
+  int ledLength = 51;
   int ledPWMPort = 9;
   
   TrobotAddressableLED m_ledStrip = new TrobotAddressableLED(ledPWMPort, ledLength);
@@ -38,7 +38,7 @@ public class LEDs extends SubsystemBase {
   SolidColorPattern solidGreen = new SolidColorPattern(green);
   SolidColorPattern solidBlack = new SolidColorPattern(black);
 
-
+  EndEffector m_EndEffector;
 
 
   public Command blinkWhiteThenStayWhite() {
@@ -85,7 +85,7 @@ public class LEDs extends SubsystemBase {
     BLACK
   }
 
-  colorSwitchCase mySwitchCase = colorSwitchCase.BLACK;
+  colorSwitchCase mySwitchCase = colorSwitchCase.WHITE;
 
   public void setWhite() {
     mySwitchCase = colorSwitchCase.WHITE;
