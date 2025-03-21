@@ -36,6 +36,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Timer;
@@ -277,9 +278,9 @@ public class Vision extends SubsystemBase {
                             // Change our trust in the measurement based on the tags we can see
                             var estStdDevs = this.getEstimationStdDevs();
 
-//                             //drivetrain.addVisionMeasurement(
-//                             //        est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()), estStdDevs);
-//                             DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
+                            //drivetrain.addVisionMeasurement(
+                            //        est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()), estStdDevs);
+                            DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
 
 //                             // Give a visual cue for alignment to reef
 //                             var i = getClosestAprilTag();

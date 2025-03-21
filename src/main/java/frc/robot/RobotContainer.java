@@ -20,8 +20,8 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
-// import dev.doglog.DogLog;
-// import dev.doglog.DogLogOptions;
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -49,7 +49,7 @@ import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 // import frc.robot.subsystems.TestIntake;
-// import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
     // TestIntake m_TestIntake = new TestIntake();
@@ -89,7 +89,7 @@ public class RobotContainer {
     EndEffector m_EndEffector = new EndEffector(m_Leds);
 
 
-    // Vision vision;
+    Vision vision;
 
 
     Command m_RunIntakeRollersUntillIntakeCANRange = new intakeUntillIntakeCANRange(intake);
@@ -120,15 +120,15 @@ public class RobotContainer {
         FollowPathCommand.warmupCommand().schedule();
 
         
-        // DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withNtPublish(true));
-        // DogLog.setPdh(new PowerDistribution());
+        DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withNtPublish(true));
+        DogLog.setPdh(new PowerDistribution());
 
-        // DogLog.log("ExampleLog", "Hello world!");
+        DogLog.log("ExampleLog", "Hello world!");
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-        // vision = new Vision(drivetrain);
+        vision = new Vision(drivetrain);
 
         configureBindings();
     }
