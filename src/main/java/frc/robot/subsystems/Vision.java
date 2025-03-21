@@ -311,7 +311,8 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
                             // Give a visual cue for alignment to reef
                             var i = getClosestAprilTag();
                             if(i.isPresent()){
-                                var t = robotToTag(drivetrain.getState().Pose, i.get());
+                                // var t = robotToTag(drivetrain.getState().Pose, i.get());
+                                var t = robotToTag(est.estimatedPose.toPose2d(), i.get());
                                 if(t.isPresent()){
                                     DogLog.log("Alignment Values", t.get());
                                     if(Math.abs(t.get().getY()) <= 0.125){

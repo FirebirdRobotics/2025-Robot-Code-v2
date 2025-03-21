@@ -55,7 +55,7 @@ public class Elevator extends SubsystemBase {
     // elevatorMotorConfigs.Feedback.FeedbackRemoteSensorID = m_CANcoder.getDeviceID();
     // elevatorMotorConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     elevatorMotorConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    elevatorMotorConfigs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    elevatorMotorConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     // elevatorMotorConfigs.Feedback.SensorToMechanismRatio = 14.1428571429;
     // distance of the first stage off to 
     elevatorMotorConfigs.Feedback.SensorToMechanismRatio = ((19.65/7.75));
