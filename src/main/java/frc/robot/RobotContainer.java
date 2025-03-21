@@ -49,7 +49,7 @@ import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 // import frc.robot.subsystems.TestIntake;
-import frc.robot.subsystems.Vision;
+// import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
     // TestIntake m_TestIntake = new TestIntake();
@@ -69,6 +69,8 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     CommandGenericHID  buttonBoardRight = new CommandGenericHID(2);
+    CommandGenericHID  buttonBoardLeft = new CommandGenericHID(1);
+
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -77,15 +79,16 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
+    LEDs m_Leds = new LEDs();
+
     Elevator m_Elevator = new Elevator();
 
     EndEffector m_EndEffector = new EndEffector();
 
-    Intake intake = new Intake();
+    Intake intake = new Intake(m_Leds);
 
-    Vision vision;
+    // Vision vision;
 
-    LEDs m_Leds = new LEDs();
 
     Command m_RunIntakeRollersUntillIntakeCANRange = new intakeUntillIntakeCANRange(intake);
 
@@ -94,7 +97,7 @@ public class RobotContainer {
     runEndEffectorUntilEndEffectorOuterCANrange m_runEndEffectorUntilendEffectorOuterCANrange = new runEndEffectorUntilEndEffectorOuterCANrange(m_EndEffector);
 
 
-    juggleCoralTillRight m_juggleCoralTillRight = new juggleCoralTillRight(m_EndEffector);
+    juggleCoralTillRight m_juggleCoralTillRight = new juggleCoralTillRight(m_EndEffector, m_Leds);
 
     intakeUntillIntakeCANRange m_intakeUntillIntakeCANRange = new intakeUntillIntakeCANRange(intake);
     // Command m_IntakingWithIntakeUpWhileCoralInBot = new IntakingWithIntakeUpWhileCoralInBot(intake, m_EndEffector, m_runEndEffectorUntilendEffectorOuterCANrange);
@@ -123,7 +126,7 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-        vision = new Vision(drivetrain);
+        // vision = new Vision(drivetrain);
 
         configureBindings();
     }
@@ -181,6 +184,11 @@ public class RobotContainer {
         // joystick.rightBumper().whileTrue(Commands.sequence(intake.setRollerMotorPercentOutputAndThenTo0Command(-0.15), intake.goToFramePerimeterPositionCommand()));
 
         // buttonBoardRight.button(1).whileTrue(m_Elevator.goToL1());
+        buttonBoardLeft.button(5).whileTrue(Commands.parallel(m_Elevator.goToDereefHigh(),m_EndEffector.goToDereefHigh()));
+        buttonBoardLeft.button(4).whileTrue(Commands.parallel(m_Elevator.goToDereefLow(),m_EndEffector.goToDereefLow()));
+
+
+
         buttonBoardRight.button(1).whileTrue(Commands.parallel(m_Elevator.goToL1(),m_EndEffector.goToL1()));
 
         buttonBoardRight.button(2).whileTrue(Commands.parallel(m_Elevator.goToL2(),m_EndEffector.goToL2()));
@@ -219,9 +227,7 @@ public class RobotContainer {
     }
 
     
-    public Command autonomousIntakeCoral() {
-        return null;
-    }
+
 
 
 
@@ -230,6 +236,7 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
+        
         /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();
         // return Commands.sequence(intake.goToFramePerimeterPositionCommand(),drivetrain.driveOutSimpleCommand());

@@ -15,7 +15,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 
-import dev.doglog.DogLog;
+// import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,9 +31,11 @@ public class Intake extends SubsystemBase {
   private final TalonFX m_rollerMotor = new TalonFX(42, "CANivore");
   private final CANrange intakeCANrange = new CANrange(45, "CANivore");
 
+  LEDs m_Leds;
 
   /** Creates a new Intake. */
-  public Intake() {
+  public Intake(LEDs leds) {
+    m_Leds = leds;
     
     var pivotMotorConfigs = new TalonFXConfiguration();
 
@@ -323,9 +325,9 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("IntakeCANRangeDistance", intakeCANrange.getDistance().getValueAsDouble());
     // SmartDashboard.putNumber("Intake Pivot Angle", m_pivotMotor.getPosition().getValueAsDouble());
-    DogLog.log("Intake/IntakeCANrangeDistance", intakeCANrange.getDistance().getValueAsDouble());
-    DogLog.log("Intake/IntakeCANrangeBoolean", intakeCANrange.getIsDetected().getValue());
-    DogLog.log("Intake/IntakePivotAngle", m_pivotMotor.getPosition().getValueAsDouble());
+    // DogLog.log("Intake/IntakeCANrangeDistance", intakeCANrange.getDistance().getValueAsDouble());
+    // DogLog.log("Intake/IntakeCANrangeBoolean", intakeCANrange.getIsDetected().getValue());
+    // DogLog.log("Intake/IntakePivotAngle", m_pivotMotor.getPosition().getValueAsDouble());
 
     
   }

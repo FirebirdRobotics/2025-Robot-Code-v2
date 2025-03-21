@@ -7,14 +7,17 @@ package frc.robot.Commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class juggleCoralTillRight extends Command {
   EndEffector m_EndEffector;
+  LEDs m_LEDs;
 
   /** Creates a new juggleCoralRillRight. */
-  public juggleCoralTillRight(EndEffector endEffector) {
+  public juggleCoralTillRight(EndEffector endEffector, LEDs leds) {
     m_EndEffector = endEffector;
+    m_LEDs = leds;
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -45,7 +48,7 @@ public class juggleCoralTillRight extends Command {
   @Override
   public void end(boolean interrupted) {
     m_EndEffector.setRollerMotorPercentOutput(0);
-
+    
   }
 
   // Returns true when the command should end.

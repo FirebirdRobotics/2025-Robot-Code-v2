@@ -22,6 +22,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -109,6 +110,20 @@ public Command testElevator() {
     
   }
 
+  public Command goToDereefHigh() {
+    
+    return runOnce(() -> goToHeight(ElevatorConstants.dereefHigh));
+
+  }
+
+  public Command goToDereefLow() {
+    
+    return runOnce(() -> goToHeight(ElevatorConstants.dereefLow));
+
+  }
+
+  
+
   public Command goToL4() {
     
     return runOnce(() -> goToHeight(ElevatorConstants.L4height));
@@ -142,6 +157,7 @@ public Command testElevator() {
     DogLog.log("Elevator position", m_leader.getPosition().getValueAsDouble());
     DogLog.log("Elevator Velocity", m_leader.getVelocity().getValueAsDouble());
     DogLog.log("Elevator Acceleration", m_leader.getAcceleration().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator position", m_leader.getPosition().getValueAsDouble());
 
   }
 }

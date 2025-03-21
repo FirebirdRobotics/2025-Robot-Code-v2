@@ -23,7 +23,7 @@ public class LEDs extends SubsystemBase {
   
   
   Color white = new Color(253, 240, 213);
-  Color red = new Color(193, 18, 31);
+  Color red = new Color(139, 0, 0);
   Color green = new Color(167, 201, 87);
   Color black = new Color(1,1,1); // Not sure if this will work
   //should be 1 for r value to get roughly black
@@ -85,11 +85,41 @@ public class LEDs extends SubsystemBase {
     BLACK
   }
 
+  colorSwitchCase mySwitchCase = colorSwitchCase.BLACK;
+
+  public void setWhite() {
+    mySwitchCase = colorSwitchCase.WHITE;
+  }
+
+  public void setRed() {
+    mySwitchCase = colorSwitchCase.RED;
+  }
+
+  public void setBlack() {
+    mySwitchCase = colorSwitchCase.BLACK;
+  }
+
 
   @Override
   public void periodic() {
-    m_ledStrip.setPattern(blinkingRed);
+    
+    switch (mySwitchCase) {
+      
+      case WHITE:
+        m_ledStrip.setPattern(blinkingWhite);
+        break;
 
+      case RED:
+        m_ledStrip.setPattern(blinkingRed);
+        break;
+
+      case BLACK:
+        m_ledStrip.setPattern(blinkingBlack);
+        break;
+    
+      default:
+        break;
+    }
     // m_ledStrip.setPattern(blinkingRed);
     // // This method will be called once per scheduler run
     // switch (switchString) {

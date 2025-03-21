@@ -5,6 +5,12 @@ public class ElevatorConstants {
     public static final int elevatorFollowerMotorID = 48;
     public static final int elevatorCANcoderID = 60;
 
+    // dereaf pos elev 7.1904296875
+    public static final double dereefLow = 7.1904296875;
+    public static final double dereefHigh = 11.779052734375;
+    
+
+
     public static final double humanFeedHeight = 7.774169921875;
 
     public static final double L4height = 24.09130859375; //L4 from the practice field

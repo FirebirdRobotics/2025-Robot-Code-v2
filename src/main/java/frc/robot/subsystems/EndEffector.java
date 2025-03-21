@@ -16,7 +16,8 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
@@ -119,6 +120,20 @@ public class EndEffector extends SubsystemBase {
     return runOnce(() -> goToAngle(angle));
   }
 
+  public Command goToDereefHigh() {
+    
+    return runOnce(() -> goToAngle(EndEffectorConstants.dereefHigh));
+
+  }
+
+  public Command goToDereefLow() {
+    
+    return runOnce(() -> goToAngle(EndEffectorConstants.dereefLow));
+
+  }
+
+  
+
 
   public Command goToL4() {
     return runOnce(() -> goToAngle(EndEffectorConstants.L4Angle));
@@ -206,12 +221,12 @@ public class EndEffector extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    DogLog.log("EndEffector/End Effector rotations", m_endEffectorPivot.getPosition().getValueAsDouble());
-    DogLog.log("EndEffector/endEffectorOuterCANrangeDistance", endEffectorOuterCANrange.getDistance().getValueAsDouble());
-    DogLog.log("EndEffector/endEffectorOuterCANrangeBoolean", endEffectorOuterCANrange.getIsDetected().getValue());
+    // DogLog.log("EndEffector/End Effector rotations", m_endEffectorPivot.getPosition().getValueAsDouble());
+    // DogLog.log("EndEffector/endEffectorOuterCANrangeDistance", endEffectorOuterCANrange.getDistance().getValueAsDouble());
+    // DogLog.log("EndEffector/endEffectorOuterCANrangeBoolean", endEffectorOuterCANrange.getIsDetected().getValue());
 
-    // DogLog.log("Elevator Velocity", m_leader.getVelocity().getValueAsDouble());
-    // DogLog.log("Elevator Acceleration", m_leader.getAcceleration().getValueAsDouble());
+    SmartDashboard.putNumber("End Effector rotations", m_endEffectorPivot.getPosition().getValueAsDouble());
+
 
   }
 }
