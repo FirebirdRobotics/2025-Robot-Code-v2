@@ -270,8 +270,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Override
     public void periodic() {
         yPos = this.getState().Pose.getY();
-        // DogLog.log("yPos", yPos);
-        // DogLog.log("Drivetrain/Odometry", this.getState().Pose);
+        DogLog.log("yPos", yPos);
+        DogLog.log("Drivetrain/Odometry", this.getState().Pose);
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.

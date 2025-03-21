@@ -7,9 +7,12 @@ package frc.robot.subsystems;
 import frc.robot.Robot;
 import frc.robot.constants.VisionConstants;
 import frc.robot.constants.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.RobotContainer;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Vector;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -32,9 +35,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -141,52 +146,54 @@ public class Vision extends SubsystemBase {
     }
     
 
-//     /**
-//      * Returns closest AprilTag
-//      * 
-//      * @return A {@link PhotonTrackedTarget} of the closest AprilTag
-//      */
-//     public Optional<PhotonTrackedTarget> getClosestAprilTag() {
-//         List<PhotonTrackedTarget> tags = List.of();
-//         var results = List.of(aprilCamLeft.getLatestResult(), aprilCamRight.getLatestResult());
-//         for(var res : results){
-//             if(res.hasTargets()){
-//                 tags.add(res.getBestTarget());
-//             }
-//         }
-//         if(tags.size() == 1){
-//             return Optional.of(tags.get(0));
-//         }
-//         else if(!tags.isEmpty()){
-//             double ambi = tags.get(0).getPoseAmbiguity();
-//             if(tags.get(1).getPoseAmbiguity() < ambi){
-//                 return Optional.of(tags.get(1));
-//             }
-//             else{
-//                 return Optional.of(tags.get(0));
-//             }
-//         }
-//         else{
-//             return Optional.empty();
-//         }
-//     }
+    /**
+     * Returns closest AprilTag
+     * 
+     * @return A {@link PhotonTrackedTarget} of the closest AprilTag
+     */
+    public Optional<PhotonTrackedTarget> getClosestAprilTag() {
+        Vector<PhotonTrackedTarget> tags = new Vector<PhotonTrackedTarget>();
+        var results = List.of(aprilCamLeft.getLatestResult(), aprilCamRight.getLatestResult());
+        for(var res : results){
+            if(res.hasTargets()){
+                tags.add(res.getBestTarget());
+            }
+        }
+        if(tags.size() == 1){
+            return Optional.of(tags.get(0));
+        }
+        else if(!tags.isEmpty()){
+            double ambi = tags.get(0).getPoseAmbiguity();
+            if(tags.get(1).getPoseAmbiguity() < ambi){
+                return Optional.of(tags.get(1));
+            }
+            else{
+                return Optional.of(tags.get(0));
+            }
+        }
+        else{
+            return Optional.empty();
+        }
+    }
 
-// public Optional<Transform3d> robotToTag(Pose3d robot, PhotonTrackedTarget target){
-//     int id = target.getFiducialId();
-//     if(id == -1){
-//         return Optional.empty();
-//     }
+public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget target){
+    int id = target.getFiducialId();
+    Rotation3d rot = new Rotation3d(robot2d.getRotation());
+    Pose3d robot = new Pose3d(robot2d.getX(), robot2d.getY(), 0, rot);
+    if(id == -1){
+        return Optional.empty();
+    }
 
-//     Optional<Pose3d> aprilPose = VisionConstants.kTagLayout.getTagPose(id);
+    Optional<Pose3d> aprilPose = VisionConstants.kTagLayout.getTagPose(id);
 
-//     if(aprilPose.isPresent()){
-//         Transform3d transf = new Transform3d(robot, aprilPose.get());
-//         return Optional.of(transf);
-//     }
-//     else{
-//         return Optional.empty();
-//     }
-// }
+    if(aprilPose.isPresent()){
+        Transform3d transf = new Transform3d(robot, aprilPose.get());
+        return Optional.of(transf);
+    }
+    else{
+        return Optional.empty();
+    }
+}
 
     /**
      * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard
@@ -278,19 +285,19 @@ public class Vision extends SubsystemBase {
                             // Change our trust in the measurement based on the tags we can see
                             var estStdDevs = this.getEstimationStdDevs();
 
-                            //drivetrain.addVisionMeasurement(
-                            //        est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()), estStdDevs);
+                            drivetrain.addVisionMeasurement(
+                                   est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()), estStdDevs);
                             DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
 
-//                             // Give a visual cue for alignment to reef
-//                             var i = getClosestAprilTag();
-//                             if(i.isPresent()){
-//                                 var t = robotToTag(est.estimatedPose, i.get());
-//                                 if(t.isPresent()){
-//                                     Rotation3d r = t.get().getRotation();
-//                                     DogLog.log("Alignment", r.getAngle());
-//                                 }
-//                             }
+                            // Give a visual cue for alignment to reef
+                            var i = getClosestAprilTag();
+                            if(i.isPresent()){
+                                var t = robotToTag(drivetrain.getState().Pose, i.get());
+                                if(t.isPresent()){
+                                    Rotation3d r = t.get().getRotation();
+                                    DogLog.log("Alignment", Math.abs(Units.radiansToDegrees(r.getAngle())));
+                                }
+                            }
                         }
                         );
         }
