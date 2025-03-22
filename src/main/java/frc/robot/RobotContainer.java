@@ -175,7 +175,8 @@ public class RobotContainer {
 
         // drivetrain.registerTelemetry(logger::telemeterize);
 
-        joystick.rightBumper().whileTrue(new AlignToReef(drivetrain, ReefSide.LEFT, false));
+        joystick.rightBumper().whileTrue(new AlignToReef(drivetrain, ReefSide.RIGHT, false));
+        joystick.leftBumper().whileTrue(new AlignToReef(drivetrain, ReefSide.LEFT, false));
         // joystick.leftBumper().whileTrue(intake.testIntakeDeployAndUndeploy());
         
         // joystick.leftBumper().whileTrue(Commands.sequence(m_intakeUntilendEffectorOuterCANrange));
@@ -202,8 +203,9 @@ public class RobotContainer {
         buttonBoardRight.button(9).whileTrue(
             Commands.parallel(intake.goToDeployAndThenToUndeployCommand(), m_juggleCoralTillRight));;
 
-        buttonBoardRight.button(1).whileTrue(new CloseDriveToPose(drivetrain, false, vision));
-        buttonBoardRight.button(0).whileTrue(new CloseDriveToPose(drivetrain, true, vision));
+        // buttonBoardRight.button(1).whileTrue(new CloseDriveToPose(drivetrain, false, vision));
+        // buttonBoardRight.button(0).whileTrue(new CloseDriveToPose(drivetrain, true, vision));
+        joystick.a().whileTrue(new CloseDriveToPose(drivetrain, true, vision));
 
 
 
@@ -227,8 +229,6 @@ public class RobotContainer {
     public Command manualIntakeCoral() {
         return null;
     }
-
-    
 
 
 

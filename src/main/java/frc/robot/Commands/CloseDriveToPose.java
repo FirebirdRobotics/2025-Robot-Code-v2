@@ -10,22 +10,25 @@ import frc.robot.subsystems.Vision;
 
 import java.util.Optional;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+
+import dev.doglog.DogLog;
 
 public class CloseDriveToPose extends Command {
 
     private final CommandSwerveDrivetrain swerve;
     private Pose2d poseFinal, currentPose;
+    private boolean leftOrRight;
     Vision m_Vision;
 
     private final PIDController xTranslationPID, yTranslationPID;
     private final PIDController rotationPID;
 
-    public CloseDriveToPose(CommandSwerveDrivetrain swerve, boolean leftOrRight, Vision vision) {
+    public CloseDriveToPose(CommandSwerveDrivetrain swerve, boolean leftOrRightt, Vision vision) {
         m_Vision = vision;
         this.swerve = swerve;
-        Optional<Pose2d> maybepose = vision.getClosestBranchPose(leftOrRight);
-        this.poseFinal = (maybepose.isPresent()) ? maybepose.get() : swerve.getState().Pose;
+        leftOrRight = leftOrRightt;
         this.xTranslationPID = new PIDController(5.0, 
                                                 0, 
                                                 0);
@@ -43,11 +46,15 @@ public class CloseDriveToPose extends Command {
         rotationPID.setTolerance(0.01);
         
         addRequirements(swerve);
+
+        
     }
 
     @Override
     public void initialize() {
         currentPose = swerve.getState().Pose;
+        Optional<Pose2d> maybepose = m_Vision.getClosestBranchPose(leftOrRight);
+        this.poseFinal = (maybepose.isPresent()) ? maybepose.get() : swerve.getState().Pose;
 
         xTranslationPID.reset();
         yTranslationPID.reset();
@@ -56,6 +63,9 @@ public class CloseDriveToPose extends Command {
         xTranslationPID.setSetpoint(poseFinal.getX());
         yTranslationPID.setSetpoint(poseFinal.getY());
         rotationPID.setSetpoint(poseFinal.getRotation().getRadians());
+
+        DogLog.log("Auto-Aligning", (this.poseFinal == swerve.getState().Pose) ? false : true);
+        DogLog.log("Aligning to:", this.poseFinal);
     }
 
     @Override
@@ -83,5 +93,6 @@ public class CloseDriveToPose extends Command {
     @Override
     public void end(boolean interrupted) {
         swerve.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(0, 0, 0)));
+        DogLog.log("Auto-Aligning", false);
     }
 }
