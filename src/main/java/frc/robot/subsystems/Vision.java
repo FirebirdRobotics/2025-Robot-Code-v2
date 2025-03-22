@@ -325,6 +325,9 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
                 }
             }
         }
+        else{
+            DogLog.log("Aligned", false)
+        }
         
     }
 
