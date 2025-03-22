@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Commands.AlignToReef;
+import frc.robot.Commands.CloseDriveToPose;
 // import frc.robot.Commands.IntakingWithIntakeUpWhileCoralInBot;
 import frc.robot.Commands.intakeUntilendEffectorOuterCANrange;
 import frc.robot.Commands.intakeUntillIntakeCANRange;
@@ -103,9 +104,6 @@ public class RobotContainer {
 
     intakeUntillIntakeCANRange m_intakeUntillIntakeCANRange = new intakeUntillIntakeCANRange(intake);
     // Command m_IntakingWithIntakeUpWhileCoralInBot = new IntakingWithIntakeUpWhileCoralInBot(intake, m_EndEffector, m_runEndEffectorUntilendEffectorOuterCANrange);
-    
-    
-
     
 
     public RobotContainer() {
@@ -203,6 +201,7 @@ public class RobotContainer {
         // buttonBoardRight.button(8).whileTrue((m_juggleCoralTillRight)); // THIS Crashes the code!
         buttonBoardRight.button(9).whileTrue(
             Commands.parallel(intake.goToDeployAndThenToUndeployCommand(), m_juggleCoralTillRight));;
+
 
 
 

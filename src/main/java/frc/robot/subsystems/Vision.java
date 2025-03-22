@@ -176,6 +176,58 @@ public class Vision extends SubsystemBase {
         }
     }
 
+public Optional<Pose2d> getClosestAprilPose(){
+    Optional<PhotonTrackedTarget> tag = getClosestAprilTag();
+    if(tag.isEmpty()){
+        return Optional.empty();
+    }
+    Optional<Pose3d> pose = VisionConstants.kTagLayout.getTagPose(tag.get().fiducialId);
+    if(pose.isPresent()){
+        return Optional.of(pose.get().toPose2d());
+    }
+    else{
+        return Optional.empty();
+    }
+}
+
+public Pose2d getShiftedAprilPose(Pose2d apose, boolean direction){
+    double x0 = apose.getX();
+    double y0 = apose.getY();
+    double theta = apose.getRotation().getRadians();
+
+    double x0p = (x0*Math.cos(theta))-(y0*Math.sin(theta));
+    double y0p = (x0*Math.sin(theta))+(y0*Math.cos(theta));
+
+    if(direction){
+        // Right
+        y0p += VisionConstants.kTagToBranch;
+    }
+    else{
+        // Left
+        y0p -= VisionConstants.kTagToBranch;
+    }
+
+    x0p += VisionConstants.kPersonalSpace;
+
+    x0 = (x0p*Math.cos(-theta))-(y0p*Math.sin(-theta));
+    y0 = (x0p*Math.sin(-theta))+(y0p*Math.cos(-theta));
+
+    Pose2d shifted = new Pose2d(x0, y0, apose.getRotation());
+
+    return shifted;
+
+}
+
+public Optional<Pose2d> getClosestBranchPose(boolean direction){
+    Optional<Pose2d> pose = getClosestAprilPose();
+    if(pose.isPresent()){
+        return Optional.of(getShiftedAprilPose(pose.get(), direction));
+    }
+    else{
+        return Optional.empty();
+    }
+}
+
 public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget target){
     int id = target.getFiducialId();
     Rotation3d rot = new Rotation3d(robot2d.getRotation());
@@ -318,7 +370,7 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
             // var t = robotToTag(est.estimatedPose.toPose2d(), i.get());
             if(t.isPresent()){
                 DogLog.log("Alignment Values", t.get());
-                if(Math.abs(t.get().getY()) <= kTolerance){
+                if(Math.abs(t.get().getY()) <= VisionConstants.kTolerance){
                     DogLog.log("Aligned", true);
                 }else{
                     DogLog.log("Aligned", false);

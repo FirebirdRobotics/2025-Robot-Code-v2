@@ -51,5 +51,7 @@ public class VisionConstants {
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 0.5);
 
     public static final double kTolerance = 0.125; /* Allow 0.125 meteres */
+    public static final double kTagToBranch = 0.011; /* Allow 11 cm from tag to branch */
+    public static final double kPersonalSpace = 0.125; /* Allow 0.125 meters from the center of the bot to the reef */
 
 }
