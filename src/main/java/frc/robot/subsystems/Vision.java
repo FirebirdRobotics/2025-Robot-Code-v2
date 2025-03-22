@@ -191,7 +191,7 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
         double y0 = aprilPose.get().getY();
         double x1 = robot.getX();
         double y1 = robot.getY();
-        double theta = -(aprilPose.get().getRotation().getAngle()+180);
+        double theta = -(aprilPose.get().getRotation().getAngle()+Units.degreesToRadians(180));
 
         double x0p = (x0*Math.cos(theta))-(y0*Math.sin(theta));
         double y0p = (x0*Math.sin(theta))+(y0*Math.cos(theta));
