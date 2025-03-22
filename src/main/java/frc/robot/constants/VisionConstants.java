@@ -50,5 +50,6 @@ public class VisionConstants {
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(1, 1, 2);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 0.5);
 
+    public static final double kTolerance = 0.125; /* Allow 0.125 meteres */
 
 }

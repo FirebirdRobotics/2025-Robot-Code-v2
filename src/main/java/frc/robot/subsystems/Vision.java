@@ -318,7 +318,7 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
             // var t = robotToTag(est.estimatedPose.toPose2d(), i.get());
             if(t.isPresent()){
                 DogLog.log("Alignment Values", t.get());
-                if(Math.abs(t.get().getY()) <= 0.125){
+                if(Math.abs(t.get().getY()) <= kTolerance){
                     DogLog.log("Aligned", true);
                 }else{
                     DogLog.log("Aligned", false);
