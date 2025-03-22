@@ -191,7 +191,7 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
         double y0 = aprilPose.get().getY();
         double x1 = robot.getX();
         double y1 = robot.getY();
-        double theta = aprilPose.get().getRotation().getAngle();
+        double theta = -(aprilPose.get().getRotation().getAngle()+180);
 
         double x0p = (x0*Math.cos(theta))-(y0*Math.sin(theta));
         double y0p = (x0*Math.sin(theta))+(y0*Math.cos(theta));
@@ -307,25 +307,24 @@ public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget targ
                             drivetrain.addVisionMeasurement(
                                    est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(Timer.getFPGATimestamp()), estStdDevs);
                             DogLog.log("Vision Pose", est.estimatedPose.toPose2d());
-
-                            // Give a visual cue for alignment to reef
-                            var i = getClosestAprilTag();
-                            if(i.isPresent()){
-                                // var t = robotToTag(drivetrain.getState().Pose, i.get());
-                                var t = robotToTag(est.estimatedPose.toPose2d(), i.get());
-                                if(t.isPresent()){
-                                    DogLog.log("Alignment Values", t.get());
-                                    if(Math.abs(t.get().getY()) <= 0.125){
-                                        DogLog.log("Aligned", true);
-                                    }else{
-                                        DogLog.log("Aligned", false);
-                                    }
-                                }
-                            }
                         }
                         );
         }
 
+        // Give a visual cue for alignment to reef
+        var i = getClosestAprilTag();
+        if(i.isPresent()){
+            var t = robotToTag(drivetrain.getState().Pose, i.get());
+            // var t = robotToTag(est.estimatedPose.toPose2d(), i.get());
+            if(t.isPresent()){
+                DogLog.log("Alignment Values", t.get());
+                if(Math.abs(t.get().getY()) <= 0.125){
+                    DogLog.log("Aligned", true);
+                }else{
+                    DogLog.log("Aligned", false);
+                }
+            }
+        }
         
     }
 
