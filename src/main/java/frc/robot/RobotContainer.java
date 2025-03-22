@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -91,7 +92,6 @@ public class RobotContainer {
 
 
     Vision vision;
-
 
     Command m_RunIntakeRollersUntillIntakeCANRange = new intakeUntillIntakeCANRange(intake);
 
@@ -202,7 +202,8 @@ public class RobotContainer {
         buttonBoardRight.button(9).whileTrue(
             Commands.parallel(intake.goToDeployAndThenToUndeployCommand(), m_juggleCoralTillRight));;
 
-
+        buttonBoardRight.button(1).whileTrue(new CloseDriveToPose(drivetrain, false, vision));
+        buttonBoardRight.button(0).whileTrue(new CloseDriveToPose(drivetrain, true, vision));
 
 
 

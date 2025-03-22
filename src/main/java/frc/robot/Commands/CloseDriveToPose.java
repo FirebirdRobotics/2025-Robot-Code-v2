@@ -6,19 +6,26 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Vision;
+
+import java.util.Optional;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 public class CloseDriveToPose extends Command {
 
     private final CommandSwerveDrivetrain swerve;
     private Pose2d poseFinal, currentPose;
+    Vision m_Vision;
 
     private final PIDController xTranslationPID, yTranslationPID;
     private final PIDController rotationPID;
 
-    public CloseDriveToPose(CommandSwerveDrivetrain swerve, Pose2d finalPose) {
+    public CloseDriveToPose(CommandSwerveDrivetrain swerve, boolean leftOrRight, Vision vision) {
+        m_Vision = vision;
         this.swerve = swerve;
-        this.poseFinal = finalPose;
+        Optional<Pose2d> maybepose = vision.getClosestBranchPose(leftOrRight);
+        this.poseFinal = (maybepose.isPresent()) ? maybepose.get() : swerve.getState().Pose;
         this.xTranslationPID = new PIDController(5.0, 
                                                 0, 
                                                 0);
