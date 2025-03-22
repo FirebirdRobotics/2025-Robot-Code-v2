@@ -181,8 +181,9 @@ public Optional<Pose2d> getClosestAprilPose(){
     if(tag.isEmpty()){
         return Optional.empty();
     }
-    Optional<Pose3d> pose = VisionConstants.kTagLayout.getTagPose(tag.get().fiducialId);
-    if(pose.isPresent()){
+    int id = tag.get().fiducialId;
+    Optional<Pose3d> pose = VisionConstants.kTagLayout.getTagPose(id);
+    if(pose.isPresent() && ((id > 6 && id < 11) || (id > 17 && id < 22))){
         return Optional.of(pose.get().toPose2d());
     }
     else{
@@ -224,9 +225,8 @@ public Optional<Pose2d> getClosestBranchPose(boolean direction){
     if(pose.isPresent()){
         return Optional.of(getShiftedAprilPose(pose.get(), direction));
     }
-    else{
-        return Optional.empty();
-    }
+    
+    return Optional.empty();
 }
 
 public Optional<Transform3d> robotToTag(Pose2d robot2d, PhotonTrackedTarget target){
