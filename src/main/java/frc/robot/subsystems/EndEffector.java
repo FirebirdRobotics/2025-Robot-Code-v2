@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.constants.EndEffectorConstants;
 import frc.robot.constants.IntakeConstants;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class EndEffector extends SubsystemBase {
     // Need to configure CAN ID for roller
@@ -99,6 +102,9 @@ public class EndEffector extends SubsystemBase {
     endEffectorRollerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
     endEffectorRollerConfigs.CurrentLimits.SupplyCurrentLimit = 50;
 
+    // Set m_endEffectorPivot to brake mode
+    m_endEffectorPivot.setNeutralMode(NeutralModeValue.Coast);
+
     m_endEffectorRollers.getConfigurator().apply(endEffectorRollerConfigs);
 
 
@@ -160,8 +166,44 @@ public class EndEffector extends SubsystemBase {
       return runOnce(() -> goToAngle(EndEffectorConstants.stowedAngle));
     }
 
+  public Command goToParty() {
+    return Commands.repeatingSequence(
+        Commands.sequence(
+            runOnce(() -> {
+                goToAngle(EndEffectorConstants.partyForward);
+                m_LEDs.setRed();
+            }),
+            Commands.waitSeconds(0.7),
+            runOnce(() -> {
+                goToAngle(EndEffectorConstants.stowedAngle);
+                m_LEDs.setBlack();
+            }),
+            runOnce(() -> {
+                goToAngle(EndEffectorConstants.partyBackward);
+                m_LEDs.setRed();
+            }),
+            Commands.waitSeconds(0.7),
+            runOnce(() -> {
+                goToAngle(EndEffectorConstants.partyBackward);
+                m_LEDs.setBlack();
+            })
+        )
+    );
+  }
 
+  private boolean isPartyActive = false;
 
+  public Command toggleParty() {
+      return runOnce(() -> {
+          if (isPartyActive) {
+              CommandScheduler.getInstance().cancelAll(); // Stop the cycle
+              isPartyActive = false;
+          } else {
+              CommandScheduler.getInstance().schedule(goToParty()); // Start the cycle
+              isPartyActive = true;
+          }
+      });
+  }
 
   public boolean getendEffectorOuterCANrange() {
   

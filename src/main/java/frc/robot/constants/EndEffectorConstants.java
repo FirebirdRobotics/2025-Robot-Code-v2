@@ -18,5 +18,9 @@ public class EndEffectorConstants {
 
     public static final double stowedAngle = -0.07080078125;
 
+    public static final double partyForward = -0.17626953125;
+    public static final double partyBackward = (0.17626953125-0.07080078125)-0.07080078125;
+    
+
 
 }
