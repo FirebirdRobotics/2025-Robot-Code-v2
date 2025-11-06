@@ -205,6 +205,7 @@ public class RobotContainer {
         buttonBoardRight.button(6).whileTrue((m_EndEffector.setRollerMotorPercentOutputAndThenTo0Command(0.3)));
         buttonBoardRight.button(7).whileTrue(Commands.sequence(intake.setRollerMotorPercentOutputAndThenTo0Command(-0.25), intake.goToFramePerimeterPositionCommand()));
         // buttonBoardRight.button(8).whileTrue((m_juggleCoralTillRight)); // THIS Crashes the code!
+        
         buttonBoardRight.button(9).whileTrue(
             Commands.parallel(intake.goToDeployAndThenToUndeployCommand(), m_juggleCoralTillRight));;
 
