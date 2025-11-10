@@ -19,7 +19,6 @@ import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
   private final TalonFX m_pivotMotor = new TalonFX(IntakeConstants.PIVOT_MOTOR_ID, "CANivore");
-  private final TalonFX m_rollerMotor = new TalonFX(IntakeConstants.ROLLER_MOTOR_ID, "CANivore");
   private final CANrange intakeCANrange = new CANrange(45, "CANivore");
 
   /** Creates a new Intake. */
@@ -58,15 +57,6 @@ public class Intake extends SubsystemBase {
     motionMagicConfigs.MotionMagicJerk = 0.0; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     m_pivotMotor.getConfigurator().apply(pivotMotorConfigs);
-
-    var intakeRollerConfigs = new TalonFXConfiguration();
-    intakeRollerConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-    intakeRollerConfigs.CurrentLimits.StatorCurrentLimit = 50;
-
-    intakeRollerConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-    intakeRollerConfigs.CurrentLimits.SupplyCurrentLimit = 50;
-
-    m_rollerMotor.getConfigurator().apply(intakeRollerConfigs);
   }
 
   public void goToAngle(double angle) {
@@ -76,16 +66,10 @@ public class Intake extends SubsystemBase {
 
   public void goToDeployedPosition() {
     goToAngle(IntakeConstants.DEPLOY_ANGLE);
-    setRollerMotorPercentOutput(0.6);
   }
 
   public void goToFramePerimeterPosition() {
     goToAngle(IntakeConstants.FRAME_PERIMETER_ANGLE);
-    setRollerMotorPercentOutput(0.6);
-  }
-
-  public void setRollerMotorPercentOutput(double outputPercent) {
-    m_rollerMotor.setControl(new DutyCycleOut(outputPercent));
   }
 
   @Override
